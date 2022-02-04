@@ -154,6 +154,14 @@ function _getParam(params, name) {
   return params.find(param => param.name === name);
 }
 
+function _getTokenId(params) {
+  const tokenId = parseInt(_getParam(params, 'tokenId').value);
+  if (tokenId > Number.MAX_SAFE_INTEGER) {
+    throw new Error(`Invalid token ID: ${_getParam(params, 'tokenId').value}.  Parsed: ${tokenId}`);
+  }
+  return tokenId;
+}
+
 /**
  * Transfer the ownership of the NTF token
  * @param {*} contract The NFT contract
@@ -175,7 +183,7 @@ function _getParam(params, name) {
  */
 async function transferHandler(contract, transaction, params) {
   const to = _getParam(params, 'to').value;
-  const tokenId = parseInt(_getParam(params, 'tokenId').value);
+  const tokenId = _getTokenId(params);
 
   return _runSQL(
     `UPDATE nft SET owner = $owner WHERE contractId = $contractId and tokenId = $tokenId`,
@@ -190,7 +198,7 @@ async function transferHandler(contract, transaction, params) {
  * @param {*} params Decoded parameters provided to the method.  Sample: [{ name: 'tokenId', value: '199398', type: 'uint256' }]
  */
 async function claimHandler(contract, transaction, params) {
-  const tokenId = parseInt(_getParam(params, 'tokenId').value);
+  const tokenId = _getTokenId(params);
   const uri = await getTokenUri(contract.address, tokenId);
   // console.log(`Token uri: ${uri}`);
   const nft = {
@@ -234,11 +242,16 @@ async function handleTransactions(contract, transactions) {
   for (let i = 0; i < transactions.length; i++) {
     const transaction = transactions[i];
     const decodedMethod = abiDecoder.decodeMethod(transaction.input);
-    // console.log('--------------------', transaction.from);
-    // console.log(JSON.stringify(decodedMethod, null, 2));
     const handler = TRANSACTION_HANDLER[decodedMethod.name];
     if (handler) {
-      await handler(contract, transaction, decodedMethod.params);
+      try {
+        await handler(contract, transaction, decodedMethod.params);
+      } catch (e) {
+        console.log('-------- Error occurs --------');
+        console.log(JSON.stringify(transaction, null, 2));
+        console.log(JSON.stringify(decodedMethod, null, 2));
+        console.error(e);
+      }
     }
   }
 }
