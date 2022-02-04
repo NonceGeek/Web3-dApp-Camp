@@ -1,0 +1,9 @@
+{
+  "type": "module",
+  "dependencies": {
+    "abi-decoder": "^2.4.0",
+    "got": "^12.0.1",
+    "sqlite3": "^5.0.2",
+    "web3": "^1.7.0"
+  }
+}
