@@ -14,13 +14,15 @@ Web3.0 dApp Dev Workshop is offline workshop in New York/Beijing/Hangzhou/Nanjin
 
 Web3.0 dApp Dev Camp/Workshop are aiming to let "traditional software developers, college students, blockchain technology practitioners" quickly learn Web3.0 based on blockchains such as Ethereum, Moonbeam, Polygon and other chains.
 
-Web3 dApp Dev Camp 是线上版本，是基于 Github Discussion 的，以 Project 为导向的线上训练营，旨在让「传统计算机从业者、在校学生、区块链技术从业人员」快速习得兼容 Ethereum 框架的链（如Moonbeam、Polygon）的 Web3.0 dApp 开发。
+Web3 dApp Dev Camp 是 线上版本，是基于 Github Discussion 的，以 Project 为导向的线上训练营，旨在让「传统计算机从业者、在校学生、区块链技术从业人员」快速习得兼容 Ethereum 框架的链（如Moonbeam、Polygon）的 Web3.0 dApp 开发。
 
-Web3 dApp Dev Workshop 是线下版本，是基于「桌面游戏理念」的线下实践活动，强调「体验感」。
+Web3 dApp Dev Workshop 是线下版本，是基于「桌面游戏理念」的线下实践活动，强调「体验感」，目前规划是：
+
+每半个月在多个据点召开线下 Workshop。Workshop 成员以 Nonce Geek Studio 成员为主，采用半开放形式，会邀请极少数外部成员来参加（定向邀请与开放付费名额）。
+
+See more details in: 
+> https://github.com/WeLightProject/Web3-dApp-Camp/discussions/2
 
 - Twitter: https://twitter.com/Web3dAppCamp
 - Projects: https://github.com/WeLightProject/Web3-dApp-Camp/discussions/categories/projects
 
-## Quick Intro
-
-- https://github.com/WeLightProject/Web3-dApp-Camp/discussions/2
