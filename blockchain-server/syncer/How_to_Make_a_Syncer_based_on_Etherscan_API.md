@@ -1,4 +1,12 @@
-# How to Make a Syncer based on Etherscan API
+# How to Make a Syncer based on Moonscan API
+
+> MoonbeamScan ：
+>
+> https://moonbeam.moonscan.io/
+>
+> `Web3DevNFT` Contract  in this article：
+>
+> https://moonbeam.moonscan.io/address/0xb6FC950C4bC9D1e4652CbEDaB748E8Cdcfe5655F
 
 ## Basic Concept
 
@@ -8,8 +16,17 @@ The Syncer has two main parts:
 
 * `Syncer`: responsible for retrieving transactions from the contract and persistence handling.
 * `Syncer Server`: repsonsible for job scheduling and monitoring.
+* `Parser`：Parse the transactions.
+
+Syncer is useful, because it formats and caches on-chain data, allowing various dApps and services to read on-chain data more quickly, improving the experience.
+
+The traditional Syncer is implemented by connecting blockchain nodes, which has the advantage of being more stable, but we also have a lighter option -- to implement Syncer by calling the API of the Etherscan-like browser! Etherscan provides an interface to get all transactions of a specific contract, so we can do Syncer with lower complexity. This doesn't sound so Web3 because Syncer relies on the browser service to function properly, but in most scenarios, it works well!
 
 ## Implementation in Elixir
+
+> Repo：
+>
+> https://github.com/WeLightProject/tai_shang_nft_gallery
 
 ### Syncer
 
@@ -243,8 +260,11 @@ defmodule TaiShangNftGallery.TxHandler.Web3Dev do
 end
 ```
 
-
 ## Implementation in Node.js
+
+> See code in:
+>
+> https://github.com/WeLightProject/Web3-dApp-Camp/tree/main/blockchain-server/syncer/syncer_demo_js
 
 ### Syncer
 
@@ -534,3 +554,5 @@ async function getTokenUri(contractAddress, tokenId) {
   return web3.utils.hexToUtf8(uriHex);
 }
 ```
+
+zzz

@@ -1,17 +1,34 @@
-# 如何基于 Etherscan API 来实现一个 Syncer
+# 基于 MoonbeamScan 实现Blockchain Syncer
 
-## 基本概念和需求
+> MoonbeamScan 地址：
+>
+> https://moonbeam.moonscan.io/
+>
+> 代码示例中的`Web3Dev`合约：
+>
+> https://moonbeam.moonscan.io/address/0xb6FC950C4bC9D1e4652CbEDaB748E8Cdcfe5655F
+
+## 0x01 什么是 Syncer？
 
 Syncer 是什么？它是一个获取智能合约的交易，并存储到本地的定时任务。  
 
-这个 Syncer 包含两大组件：
+这个 Syncer 包含三大组件：
 
 * `Syncer`: 负责获取智能合约的交易，并存储。  
+* `Parser`：交易解析。
 * `Syncer Server`: 负责定时任务的监控。  
 
-## Elixir 实现分析
+Syncer 很有用，它可以对链上数据进行格式化与缓存，从而使各种dApp与服务可以更快捷地读取链上数据，从而提升体验。
 
-### Syncer
+传统的 Syncer 是通过连接区块链节点来实现的，这样的好处是更加稳定而且更加 Crypto；但我们还有一种更轻量的选择——通过调用 Etherscan 类浏览器的 API 来实现 Syncer！Etherscan 提供了获取特定合约所有交易的接口，因此我们可以用更低的复杂度来做 Syncer。这听上去没有那么 Web3，因为 Syncer 依赖于浏览器服务的正常运转，但是在大多数场景下，it works well！
+
+## 0x02 Elixir 实现分析
+
+> 源码地址：
+>
+> https://github.com/WeLightProject/tai_shang_nft_gallery
+
+### 2.1 Syncer
 
 Syncer 的处理逻辑包含三大步骤：  
 
@@ -70,7 +87,7 @@ defmodule TaiShangNftGallery.Nft.Syncer do
 end
 ```
 
-### Syncer 监控服务
+### 2.2 Syncer 监控服务
 
 Syncer 监控服务是通过 `GenServer` 来实现的。  对于不了解 Elixir 的同学来说，可以把它想像成一个永不停歇的进程。即使出错，它也能自动重启。  
 
@@ -125,9 +142,15 @@ end
 ```
 
 
-### 解析交易详情
+### 2.3 解析交易详情
 
-Different transactions actually represent different contract method call.  In order to identify what exactly the transaction is doing, we have to decode the transaction `input` because the input is a hex value like `0x379607f5000000000000000000000000000000000000000000000000000000000000026d`.  `TxHandler.handle_tx/3` uses `ABI` related APIs encapsulated in `ABIHandler.find_and_decode/2` to accomplish that.  
+不同的交易实质上是调用不同的合约方法，为了准确识别合约做了什么，我们可以对交易`Input`进行解析，交易`Input`长这样：
+
+```
+0x379607f5000000000000000000000000000000000000000000000000000000000000026d
+```
+
+`TxHandler.handle_tx/3` 借助`ABI`，调用了`ABIHandler.find_and_decode/2`方法，去完成`Input`的解析。
 
 ```elixir
 # https://github.com/WeLightProject/tai_shang_nft_gallery/blob/main/lib/tai_shang_nft_gallery/tx_handler.ex
@@ -177,11 +200,11 @@ defmodule TaiShangNftGallery.ABIHandler do
 end
 ```
 
-In the exact contract handler (type Web3Dev), we can see that only below methods are handled.  Other than those, it returns `{:ok, "pass"}` directly.
+以`Web3DevNFT`为例，我们实现一个`ContractHandler`，解析了如下的方法。除此之外的方法，我们直接返回`{:ok, "Pass"}`。
 
-* `safeTransferFrom` / `trasnferFrom`: Used to transfer the ownership of the NFT  
-* `claim`: Used to initialize the NFT token  
-* `setTokenInfo`:  Used to set NFT token info  
+* `safeTransferFrom` / `trasnferFrom`: 发送NFT给其他人（标准ERC721接口）
+* `claim`: 申领NFT（标准ERC721接口）
+* `setTokenInfo`:  设置Token中的信息
 
 ```elixir
 # https://github.com/WeLightProject/tai_shang_nft_gallery/blob/main/lib/tai_shang_nft_gallery/tx_handler/web_3_dev.ex
@@ -244,10 +267,13 @@ defmodule TaiShangNftGallery.TxHandler.Web3Dev do
 end
 ```
 
+## 0x03 用 Node.js 实现相同的功能
 
-## 在 Node.js 实现相同的功能
+该代码见：
 
-### Syncer
+> https://github.com/WeLightProject/Web3-dApp-Camp/tree/main/blockchain-server/syncer/syncer_demo_js
+
+### 3.1 Syncer
 
 通过 [Web3](https://web3js.readthedocs.io/en/v1.7.0/web3-eth.html#getblocknumber) 和 [Moonbeam](https://moonbeam.moonscan.io/apis) 提供的 API，实现起来非常容易。我们以和 Moonbeam 区块链的交互来举例。  
 
@@ -384,7 +410,7 @@ async function execute() {
 execute();
 ```
 
-### 解析交易
+### 3.2 解析交易
 
 同样，我们需要用到 Web3 提供的 API 来解析交易的详情。
 

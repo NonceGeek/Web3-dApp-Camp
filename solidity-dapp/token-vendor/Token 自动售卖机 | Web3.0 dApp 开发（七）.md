@@ -1,9 +1,9 @@
-# Token Vendor 完整教程
+# Token 自动售卖机 | Web3.0 dApp 开发（七）
 
 Token Vendor 是 scaffold-eth 联合 BuidlGuidl 提供的一个 Token 自动售卖机项目。本教程将带领大家一步一步分析和实现这个项目。我们可以把这个自动售卖机的终极目标，切分为 5 个小目标。每个步骤做完，我们都实现了一小部分功能，并可验证这小部分的功能是否完成。
 
 -------------
-## 安装和配置本地环境
+## 0x01 安装和配置本地环境
 
 1. 打开命令行窗口，clone scaffold-eth 的基础项目代码：
 
@@ -33,28 +33,28 @@ Token Vendor 是 scaffold-eth 联合 BuidlGuidl 提供的一个 Token 自动售�
     yarn start (React 前端 App)
     ```
 
-    ![Terminal](images/checkpoint-1-env-01-3-terminals.png)
+    ![Terminal](https://tva1.sinaimg.cn/large/e6c9d24ely1h070psu60aj20tg0l2ab4.jpg)
 
     命令执行后
 
-    ![Command Completed](images/checkpoint-1-env-02-after-commands.png)
+    ![Command Completed](https://tva1.sinaimg.cn/large/e6c9d24ely1h070pv0m5ej20tg0mn0v9.jpg)
 
 4. 前端页面
 
     在浏览器中访问 [`http://localhost:3000`](http://localhost:3000/) 可看到 App 的页面：
 
-    ![App UI](images/checkpoint-1-env-03-open-ui-login.png)
+    ![App UI](https://tva1.sinaimg.cn/large/e6c9d24ely1h070prbvaaj218f0qd76f.jpg)
 
 -------------
-## 准备 MetaMask 及帐号
+## 0x02 准备 MetaMask 及帐号
 
 1. 如果你没有 Ethereum 的钱包帐号，可以通过 `yarn generate` 来生成一个：
 
-    ![Generate Account](images/checkpoint-1-env-04-generate-account.png)
+    ![Generate Account](https://tva1.sinaimg.cn/large/e6c9d24ely1h070po1q6jj20rn04yq4c.jpg)
 
 2. 运行 `yarn account` 查看帐号信息：
 
-    ![View Account](images/checkpoint-1-env-05-view-account.png)
+    ![View Account](https://tva1.sinaimg.cn/large/e6c9d24ely1h070pvgen8j20n00h73zq.jpg)
 
     修改 `packages/hardhat-ts/hardhat.config.ts` 文件中关于 `DEBUG` 的语句为：`const DEBUG = true;`，查看帐号信息的时候还会显示出钱包的私钥，可以此导入帐号到 MetaMask。
 
@@ -70,7 +70,7 @@ Token Vendor 是 scaffold-eth 联合 BuidlGuidl 提供的一个 Token 自动售�
     记得检查链 ID 的值。一般情况下它是 `1337`。但是 hardhat 的本地网络比较特殊，是 `31337`。如果你不改过来，会碰上[这个问题](https://hardhat.org/metamask-issue.html)，无法发出交易。
 
 -------------
-## 发布属于你的 Token
+## 0x03 发布属于你的 Token
 
 ### Token 的智能合约
 
@@ -119,17 +119,17 @@ contract YourToken is ERC20 {
 
 修改完通过命令 `yarn deploy --reset` 即可部署。
 
-![Deploy Token](images/checkpoint-2-token-01-deploy-token.png)
+![Deploy Token](https://tva1.sinaimg.cn/large/e6c9d24ely1h070pu2x6vj20th0modio.jpg)
 
 部署成功后，通过浏览器的 `Debug` 页面，调用 `balanceOf` 函数，则可查看转账后的地址是否拥有相应数量的 Token。
 
-![Account Balance](images/checkpoint-2-token-02-account-balance.png)
+![Account Balance](https://tva1.sinaimg.cn/large/e6c9d24ely1h070ppwwgqj218f0os0uh.jpg)
 
 你还可以尝试从当前帐号转 Token 给另一个帐号。不过，在此之前，当前帐号的钱包需要具备一点 ETH。
 
 当前页面的 **Grab funds from the faucet** 按钮可以马上获取一点。
 
-![Grab ETH](images/checkpoint-2-token-03-grab-eth-before-transfer.png)
+![Grab ETH](https://tva1.sinaimg.cn/large/e6c9d24ely1h070pujzjmj20f3035aa2.jpg)
 
 另一个获取更多 ETH 的方法是通过 [faucet.paradigm.xyz](https://faucet.paradigm.xyz/) 页面授权 Twitter 登录后填地址索取。
 
@@ -137,12 +137,12 @@ contract YourToken is ERC20 {
 
 **注意**：因为合约的改动，或者时间的限制，你可能需要多次部署，不能一次测试完成。本地测试网络的变化，会导致帐号在网络中的交易数，和 MetaMask 上记录的交易数不同。发起交易时，MetaMask 可能会提醒你 **Nonce too high.  Expected nonce to be 0 but got x.** 这样的错误。如果是这样，你需要重新准备一个帐号，或者从 MetaMask 删除这个帐号，再重新导入试试。
 
-![Transfer Another](images/checkpoint-2-token-04-fill-recipient-amount.png)
+![Transfer Another](https://tva1.sinaimg.cn/large/e6c9d24ely1h070pvxvfgj20w80i2gme.jpg)
 
-![Confirm Transfer](images/checkpoint-2-token-05-confirm-transfer.png)
+![Confirm Transfer](https://tva1.sinaimg.cn/large/e6c9d24ely1h070pqutmnj20a10hadge.jpg)
 
 -------------
-## 打造售卖机 Vendor
+## 0x04 打造售卖机 Vendor
 
 现在我们开始实现售卖机 Vendor 的智能合约了。它的框架在 `packages/hardhat-ts/contracts/Vendor.sol` 文件。
 
@@ -281,26 +281,26 @@ await vendor.transferOwnership("0xC0802222dB0F31d63dc85d9C8CAa00485715A13c");
 
 售卖机初始有 500 个 Token，我打算买 10 个。
 
-![Vendor Balance](images/checkpoint-3-vendor-01-vendor-token-balance.png)
+![Vendor Balance](https://tva1.sinaimg.cn/large/e6c9d24ely1h070pqe114j20ry0iedgd.jpg)
 
 大概需要 0.001 个 ETH
 
-![Buy Token](images/checkpoint-3-vendor-02-buy-token.png)
+![Buy Token](https://tva1.sinaimg.cn/large/e6c9d24ely1h070pt6a1fj20a60kf0tg.jpg)
 
 购买后 Vendor 剩下 490 个。ETH balance 也多了 0.001 ETH。下面还啊可以看到 Buy Token 的事件：
 
-![New Balance](images/checkpoint-3-vendor-03-new-token-balance.png)
+![New Balance](https://tva1.sinaimg.cn/large/e6c9d24ely1h070ptlnsfj20t00p20tm.jpg)
 
 提取 ETH（当前帐号为 0.0089 ETH）
 
-![Withdraw](images/checkpoint-3-vendor-04-withdraw.png)
+![Withdraw](https://tva1.sinaimg.cn/large/e6c9d24ely1h070pp2ee1j20z00o7jt2.jpg)
 
 提取 ETH 成功（当前帐号则为 0.0098 ETH)
 
-![Withdraw Success](images/checkpoint-3-vendor-05-withdraw-success.png)
+![Withdraw Success](https://tva1.sinaimg.cn/large/e6c9d24ely1h070ppef7pj20a10gi3yx.jpg)
 
 -------------
-## 售卖机 Vendor 回购
+## 0x05 售卖机 Vendor 回购
 
 有时候，我们想把手上的 Token 卖出去，换 ETH 回来。那如果售卖机 Vendor 能完成这样的操作就好了。
 
@@ -324,7 +324,7 @@ await vendor.transferOwnership("0xC0802222dB0F31d63dc85d9C8CAa00485715A13c");
         _approve(owner, spender, amount);
         return true;
     }
-
+    
     function _approve(
         address owner,
         address spender,
@@ -332,7 +332,7 @@ await vendor.transferOwnership("0xC0802222dB0F31d63dc85d9C8CAa00485715A13c");
     ) internal virtual {
         require(owner != address(0), "ERC20: approve from the zero address");
         require(spender != address(0), "ERC20: approve to the zero address");
-
+    
         _allowances[owner][spender] = amount;
         emit Approval(owner, spender, amount);
     }
@@ -345,19 +345,19 @@ await vendor.transferOwnership("0xC0802222dB0F31d63dc85d9C8CAa00485715A13c");
     ```solidity
     // ToDo: create a sellTokens() function:
     event SoldTokens(uint256 amountOfEth, uint256 amountOfTokens);
-
+    
     function sellTokens(uint256 tokenToSell) public {
       require(tokenToSell > 0, 'You need to sell at least some tokens');
-
+    
       // 计算所需的 ETH 数量
       uint256 ethSold = tokenToSell / tokensPerEth;
       require(address(this).balance > ethSold, 'Not enough ETH to buy from Vendor');
-
+    
       // 把 Token 从用户手上转到 Vendor 合约
       yourToken.transferFrom(msg.sender, address(this), tokenToSell);
-
+    
       payable(msg.sender).transfer(ethSold);
-
+    
       emit SoldTokens(ethSold, tokenToSell);
     }
     ```
@@ -375,7 +375,7 @@ await vendor.transferOwnership("0xC0802222dB0F31d63dc85d9C8CAa00485715A13c");
         _transfer(from, to, amount);
         return true;
     }
-
+    
     // 检查 owner 也就是 Vendor 合约是否能从 YourToken 获取 `msg.sender` 所需要数量的 Token。
     function _spendAllowance(
         address owner,
@@ -390,7 +390,7 @@ await vendor.transferOwnership("0xC0802222dB0F31d63dc85d9C8CAa00485715A13c");
             }
         }
     }
-
+    
     function _transfer(
         address from,
         address to,
@@ -398,18 +398,18 @@ await vendor.transferOwnership("0xC0802222dB0F31d63dc85d9C8CAa00485715A13c");
     ) internal virtual {
         require(from != address(0), "ERC20: transfer from the zero address");
         require(to != address(0), "ERC20: transfer to the zero address");
-
+    
         _beforeTokenTransfer(from, to, amount);
-
+    
         uint256 fromBalance = _balances[from];
         require(fromBalance >= amount, "ERC20: transfer amount exceeds balance");
         unchecked {
             _balances[from] = fromBalance - amount;
         }
         _balances[to] += amount;
-
+    
         emit Transfer(from, to, amount);
-
+    
         _afterTokenTransfer(from, to, amount);
     }
     ```
@@ -426,18 +426,18 @@ await vendor.transferOwnership("0xC0802222dB0F31d63dc85d9C8CAa00485715A13c");
 
     Approve Vendor 可售卖的 Token 数量：
 
-    ![Approve](images/checkpoint-4-buyback-01-approve.png)
+    ![Approve](https://tva1.sinaimg.cn/large/e6c9d24ely1h070pg7ibcj20xl0jh0uh.jpg)
 
     售出 Token 给 Vendor 售卖机：
 
-    ![Sell Token](images/checkpoint-4-buyback-02-sell-token.png)
+    ![Sell Token](https://tva1.sinaimg.cn/large/e6c9d24ely1h070pgy4x5j20ya0kk403.jpg)
 
     提取 ETH 成功（当前帐号则为 0.0098 ETH)
 
-    ![Vendor Balance](images/checkpoint-4-buyback-03-new-vendor-balance.png)
+    ![Vendor Balance](https://tva1.sinaimg.cn/large/e6c9d24ely1h070ps9yqwj20tn0jq3z6.jpg)
 
 
-## 公开部署
+## 0x06 公开部署
 
 至此，`YourToken` 和 `Vendor` 自助售卖机合约所有的代码都已实现了，并在本地运行测试网络测试运行了。现在我们还可以通过修改以下两个文件的网络设置，直接部署合约到公共的测试网络，甚至主网。
 
