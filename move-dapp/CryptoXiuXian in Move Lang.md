@@ -107,13 +107,15 @@ public fun 函数名(参数：参数类型){ }
 
 move函数默认是私有函数，只能在定义它们的模块中访问。关键字 public 将更改函数的默认可见性并使其公开，即可以从外部访问。
 
-init方法参数是一个&signer，意味着该方法必须是一个账户合法签名过后才可以调用，move_to则是move的一个原语，作用是将一个resource移到account地址下，初始化一个Counter。Move的账户模型，code和data是存储在一个账户地址下的。
+init方法参数是一个&signer，意味着该方法必须是一个账户合法签名过后才可以调用，move_to则是move的一个原语，作用是发布、添加Counter资源到 signer 的地址下。Move的账户模型，code和data是存储在一个账户地址下的。
 
-此外还有其他三个常用的原语
+下面是列举的常用原语
 
-- move_from< T >(addr: address): T - 将一个账户下的resource所有权提出来。
-- borrow_global< T >(addr: address): &T - 借用账户下的resource，不可更改。
-- borrow_global_mut< T >(addr: address): &mut T - 借用账户下的resource，同时可以进行修改
+- move_to< T >(&signer, T)：发布、添加类型为 T 的资源到 signer 的地址下。
+- move_from< T >(addr: address): T - 从地址下删除类型为 T 的资源并返回这个资源。
+- borrow_global< T >(addr: address): &T - 返回地址下类型为 T 的资源的不可变引用。
+- borrow_global_mut< T >(addr: address): &mut T - 返回地址下类型为 T 的资源的可变引用。
+- exists< T >(address): bool：判断地址下是否有类型为 T 的资源。。
 
 incr方法参数也是一个&signer，意味着该方法必须是一个账户合法签名过后才可以调用,
 
@@ -123,7 +125,13 @@ Signer::address_of(account) 从签名者中拿到address
 
 borrow_global_mut上面有介绍到，可变借用到address下到resource Counter，然后将Counter结构体下的value进行+1操作。
 
-这下面的两个方法则是script方法，也可单独编写move文件,在main方法中调用module下的方法，为了方便可以将函数定义成 public(script)这样就可以直接在module中像script那样调用
+这下面的两个方法则是script方法,它与上面两个函数有什么区别呢？
+
+- public fun : 方法可以在任何模块中被调用。
+- public(script) fun：script function 是模块中的入口方法，表示该方法可以通过控制台发起一个交易来调用，就像本地执行脚本一样
+
+下个版本的 Move 会用 public entry fun 替代 public(script) fun
+
 Self则是代表自身module。
 ```rust
   public(script) fun init_counter(account: signer){
