@@ -43,7 +43,7 @@ starcoin% account create -p [pwd]
 > https://github.com/starcoinorg/starcoin-cookbook/blob/main/examples/my-counter
 
 ```rust
-module MyCounter::MyCounter {
+module MyCounterAddr::MyCounter {
      use StarcoinFramework::Signer;
 
      struct Counter has key, store {
@@ -67,7 +67,81 @@ module MyCounter::MyCounter {
 }
 ```
 
-// TODO 源码分析
+MyCounter 源码分析
+
+module 是发布在特定地址下的打包在一起的一组函数和结构体。使用script时需要与已发布的module或标准库一起运行，而标准库本身就是在 0x1 地址下发布的一组module。
+
+module MyCounterAddr::MyCounter{ } 则在该MyCounterAddr地址下(对应Move.toml下的MyCounterAddr = "0xb7c46353c6c0e3a2559d5b12cad981e4")创建一个module。
+
+use StarcoinFramework::Signer，是使用标准库下的Signer module，Signer 是一种原生的类似 Resource 的不可复制的类型，它包含了交易发送者的地址。引入signer类型的原因之一是要明确显示哪些函数需要发送者权限，哪些不需要。因此，函数不能欺骗用户未经授权访问其 Resource。具体可参考[源码](https://github.com/starcoinorg/starcoin-framework/blob/main/sources/Signer.move)。
+```rust
+struct Counter has key, store {
+        value:u64,
+     }
+```
+使用struct定义了一个叫做Counter的结构体，同时被 key,store两种限制符修饰，Move的类型系统灵活，每种类型都可以被四种限制符所修饰。这四种限制符我们称之为 abilities，它们定义了类型的值是否可以被复制、丢弃和存储。
+这四种 abilities 限制符分别是: Copy, Drop, Store 和 Key.
+
+它们的功能分别是： 
+- Copy - 被修饰的值可以被复制。 
+- Drop - 被修饰的值在作用域结束时可以被丢弃。 
+- Key - 被修饰的值可以作为键值对全局状态进行访问。 
+- Store - 被修饰的值可以被存储到全局状态。
+
+这里用key,store修饰，则表示它不能被复制，也不能被丢弃或重新使用，但是它却可以被安全地存储和转移。
+
+下面则是定义的方法，
+```rust
+public fun init(account: &signer){
+    move_to(account, Counter{value:0});
+}
+public fun incr(account: &signer) acquires Counter {
+    let counter = borrow_global_mut<Counter>(Signer::address_of(account));
+    counter.value = counter.value + 1;
+}
+```
+
+定义格式则是:
+
+public fun 函数名(参数：参数类型){ }
+
+move函数默认是私有函数，只能在定义它们的模块中访问。关键字 public 将更改函数的默认可见性并使其公开，即可以从外部访问。
+
+init方法参数是一个&signer，意味着该方法必须是一个账户合法签名过后才可以调用，move_to则是move的一个原语，作用是发布、添加Counter资源到 signer 的地址下。Move的账户模型，code和data是存储在一个账户地址下的。
+
+下面是列举的常用原语
+
+- move_to< T >(&signer, T)：发布、添加类型为 T 的资源到 signer 的地址下。
+- move_from< T >(addr: address): T - 从地址下删除类型为 T 的资源并返回这个资源。
+- borrow_global< T >(addr: address): &T - 返回地址下类型为 T 的资源的不可变引用。
+- borrow_global_mut< T >(addr: address): &mut T - 返回地址下类型为 T 的资源的可变引用。
+- exists< T >(address): bool：判断地址下是否有类型为 T 的资源。。
+
+incr方法参数也是一个&signer，意味着该方法必须是一个账户合法签名过后才可以调用,
+
+关键字 acquires，放在函数返回值之后，用来显式定义此函数获取的所有 Resource。
+
+Signer::address_of(account) 从签名者中拿到address
+
+borrow_global_mut上面有介绍到，可变借用到address下到resource Counter，然后将Counter结构体下的value进行+1操作。
+
+这下面的两个方法则是script方法,它与上面两个函数有什么区别呢？
+
+- public fun : 方法可以在任何模块中被调用。
+- public(script) fun：script function 是模块中的入口方法，表示该方法可以通过控制台发起一个交易来调用，就像本地执行脚本一样
+
+下个版本的 Move 会用 public entry fun 替代 public(script) fun
+
+Self则是代表自身module。
+```rust
+  public(script) fun init_counter(account: signer){
+        Self::init(&account)
+     }
+
+     public(script) fun incr_counter(account: signer)  acquires Counter {
+        Self::incr(&account)
+     }
+```
 
 #### 1.3.1 编译
 
