@@ -192,27 +192,31 @@ account unlock [addr] -p [pwd]
 
 // TODO
 
-### 1.4 Variables 
+### 1.4 Your First Move dApp / Starcoin dApp
+
+
+
+### 1.5 Variables 
 
 // TODO
 
-### 1.5 Basic Operations
+### 1.6 Basic Operations
 
 // TODO
 
-### 1.6 Functions
+### 1.7 Functions
 
 // TODO
 
-### 1.7 Sructs
+### 1.8 Sructs
 
 // TODO
 
-### 1.8 Impl - DNA Generator
+### 1.9 Impl - DNA Generator
 
 // TODO
 
-### 1.9 Buidl A XiuXian Role
+### 1.10 Buidl A XiuXian Role
 
 // TODO
 
