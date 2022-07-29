@@ -19,7 +19,7 @@
 ```bash
 # 启动一个本地 dev 节点
 $ starcoin -n dev
-# 启动一个本地 dev 节点的同时，控制台
+# 启动一个本地 dev 节点的同时，控制台 // TODO: Remember -d
 $ starcoin -n dev console
 ```
 
@@ -168,7 +168,7 @@ $ mpm release
 
 ![image-20220727124134402](https://tva1.sinaimg.cn/large/e6c9d24egy1h4lducyft6j20es066jri.jpg)
 
-#### 1.3.2 部署
+#### 1.3.2 控制台部署
 
 在 Starcoin Console 中执行如下命令即可部署：
 
@@ -188,7 +188,7 @@ account unlock [addr] -p [pwd]
 
 ![image-20220727124625807](https://tva1.sinaimg.cn/large/e6c9d24egy1h4ldz8jd7lj213s0lmju5.jpg)
 
-#### 1.3.3 调用
+#### 1.3.3 控制台调用
 
 See in
 
@@ -262,7 +262,7 @@ starcoin% account export 0x23dc2c167fcd16e28917765848e189ce
 
 ![image-20220729093132604](https://tva1.sinaimg.cn/large/e6c9d24egy1h4njn0wdfyj21gc0skdjy.jpg)
 
-#### 1.4.3 合约配置
+#### 1.4.3 函数调用
 
 调整 demo 中的合约。首先我们定位到相关代码处：
 
@@ -272,7 +272,7 @@ src/app.jsx
 
 找到标签` {/* Contracts Function */}`：
 
-```typescript
+```react
 {/* Contracts Function */}
                 <div className="mt-4 shadow-2xl rounded-2xl border-2 border-slate-50 p-2">
                   <div className="font-bold">Contract Function</div>
@@ -296,9 +296,53 @@ src/app.jsx
                 </div>
 ```
 
-#### 1.4.4 调用合约
+将` 0x1::TransferScripts::peer_to_peer_v2`改为`Init_counter`。
 
+定位到`src/modal.jsx`，修改`!! KEY PLACE`为相应的 func：
 
+```react
+try {
+      // !! KEY PLACE
+      const functionId = "0x2fe27a8d6a04d57583172cdda79df0e9::MyCounter::init_counter";
+      // !! KEY PLACE
+      const strTypeArgs = [];
+      
+      const tyArgs = utils.tx.encodeStructTypeTags(strTypeArgs);
+      const sendAmount = parseFloat(amount, 10);
+      if (!(sendAmount > 0)) {
+        window.alert("Invalid sendAmount: should be a number!");
+        return false;
+      }
+      const BIG_NUMBER_NANO_STC_MULTIPLIER = new BigNumber("1000000000");
+      const sendAmountSTC = new BigNumber(String(sendAmount), 10);
+      const sendAmountNanoSTC = sendAmountSTC.times(
+        BIG_NUMBER_NANO_STC_MULTIPLIER
+      );
+      const sendAmountHex = `0x${sendAmountNanoSTC.toString(16)}`; // Multiple BcsSerializers should be used in different closures, otherwise, the latter will be contaminated by the former.
+      const amountSCSHex = (function () {
+        const se = new bcs.BcsSerializer();
+        // eslint-disable-next-line no-undef
+        se.serializeU128(BigInt(sendAmountNanoSTC.toString(10)));
+        return hexlify(se.getBytes());
+      })();
+
+      // !! KEY PLACE
+      const args = [];
+
+      // const args = [arrayify(account), arrayify(amountSCSHex)];
+
+      const scriptFunction = utils.tx.encodeScriptFunction(
+        functionId,
+        tyArgs,
+        args
+      );
+```
+
+ 
+
+#### 1.4.4 操作资源
+
+// TODO
 
 ### 1.5 Variables 
 
