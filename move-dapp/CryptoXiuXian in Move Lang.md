@@ -18,9 +18,9 @@
 
 ```bash
 # 启动一个本地 dev 节点
-$starcoin -n dev
-# 启动控制台
-$starcoin -n dev console
+$ starcoin -n dev
+# 启动一个本地 dev 节点的同时，控制台
+$ starcoin -n dev console
 ```
 
 starcoin 控制台命令：
@@ -148,8 +148,8 @@ Self则是代表自身module。
 下载第一个实例的源码：
 
 ```bash
-$git clone git@github.com:WeLightProject/Web3-dApp-Camp.git
-$cd Web3-dApp-Camp/move-dapp/my-counter
+$ git clone git@github.com:WeLightProject/Web3-dApp-Camp.git
+$ cd Web3-dApp-Camp/move-dapp/my-counter
 ```
 
 修改`move.toml`中的地址为你用来部署的地址。
@@ -161,7 +161,7 @@ $cd Web3-dApp-Camp/move-dapp/my-counter
 编译：
 
 ```bash
-$mpm release
+$ mpm release
 ```
 
 接下来会在`release`文件夹中，看到你编译好的二进制文件。
@@ -194,7 +194,72 @@ account unlock [addr] -p [pwd]
 
 ### 1.4 Your First Move dApp / Starcoin dApp
 
+下载`starcoin-test-dapp-react`：
 
+```bash
+$ git clone git@github.com:starcoinorg/starcoin-test-dapp-react.git
+```
+
+#### 1.4.1 极速启动
+
+```bash
+$ yarn
+$ yarn start
+```
+
+![image-20220729090935566](https://tva1.sinaimg.cn/large/e6c9d24egy1h4niy9kgp7j20zu0u010b.jpg)
+
+#### 1.4.2 配置 Starmask
+
+Starmask 是和 Metamask 一样的浏览器插件。
+
+因此，我们可以使用相同的方式去配置：
+
+- **确保节点 RPC 端口能访问**
+
+```bash
+$ lsof -i:9851
+```
+
+![image-20220729092714792](https://tva1.sinaimg.cn/large/e6c9d24egy1h4njgltcaej20x809iwh4.jpg)
+
+* **添加端口为`9851` 的本地网络**
+
+![image-20220729092609290](https://tva1.sinaimg.cn/large/e6c9d24egy1h4njfftt3lj20a80hojrt.jpg)
+
+- **在 Starmask 中导入测试账户**
+
+控制台中的导出私钥命令：
+
+```bash
+starcoin% account export 0x23dc2c167fcd16e28917765848e189ce
+```
+
+然后通过导入账户功能导入：
+
+![image-20220729092931382](https://tva1.sinaimg.cn/large/e6c9d24egy1h4njiyc3yfj20a90h3dg8.jpg)
+
+- **余额显示**
+
+此时 Starmask、Starcoin Console 与 RPC 接口所查询到同一账户的 STC 余额应该一致。
+
+其中 Starcoin RPC 的 Postman Collection 链接如下：
+
+> https://www.postman.com/starcoinorg/workspace/starcoin-blockchain-api/request/13565741-fa891c12-6684-452a-86cb-6d938fc72f4e
+
+![image-20220729093042286](https://tva1.sinaimg.cn/large/e6c9d24egy1h4njk6sd7jj20a70hlq3g.jpg)
+
+![image-20220729093116486](https://tva1.sinaimg.cn/large/e6c9d24egy1h4njmxuj7yj21400iygo1.jpg)
+
+![image-20220729093132604](https://tva1.sinaimg.cn/large/e6c9d24egy1h4njn0wdfyj21gc0skdjy.jpg)
+
+#### 1.4.3 合约配置
+
+// TODO
+
+#### 1.4.4 调用合约
+
+// TODO
 
 ### 1.5 Variables 
 
