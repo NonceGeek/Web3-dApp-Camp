@@ -156,7 +156,7 @@ $ cd Web3-dApp-Camp/move-dapp/my-counter
 
 ![image-20220727123922351](https://tva1.sinaimg.cn/large/e6c9d24egy1h4ldrxbqt8j217o0h8gom.jpg)
 
-// TODO：此处加上个知识点
+**// TODO：此处加上个知识点**
 
 编译：
 
@@ -190,7 +190,16 @@ account unlock [addr] -p [pwd]
 
 #### 1.3.3 调用
 
-// TODO
+See in
+
+> https://starcoinorg.github.io/starcoin-cookbook/docs/move/interacting-with-the-contract
+
+```
+starcoin% account execute-function --function 0x23dc2c167fcd16e28917765848e189ce::MyCounter::init_counter -s 0x23dc2c167fcd16e28917765848e189ce -b
+starcoin% state get resource 0x23dc2c167fcd16e28917765848e189ce 0x23dc2c167fcd16e28917765848e189ce::MyCounter::Counter
+```
+
+**// TODO：更详细一点**
 
 ### 1.4 Your First Move dApp / Starcoin dApp
 
@@ -255,11 +264,41 @@ starcoin% account export 0x23dc2c167fcd16e28917765848e189ce
 
 #### 1.4.3 合约配置
 
-// TODO
+调整 demo 中的合约。首先我们定位到相关代码处：
+
+```bash
+src/app.jsx
+```
+
+找到标签` {/* Contracts Function */}`：
+
+```typescript
+{/* Contracts Function */}
+                <div className="mt-4 shadow-2xl rounded-2xl border-2 border-slate-50 p-2">
+                  <div className="font-bold">Contract Function</div>
+                  <div
+                    className="mt-4 rounded-2xl bg-blue-900 flex justify-center text-white p-4 font-bold cursor-pointer hover:bg-blue-700 duration-300"
+                    onClick={() => {
+                      makeModal({
+                        children: ({ onClose }) => {
+                          return (
+                            <>
+                              <Mask onClose={onClose} />
+                              <Account />
+                            </>
+                          );
+                        },
+                      });
+                    }}
+                  >
+                    0x1::TransferScripts::peer_to_peer_v2
+                  </div>
+                </div>
+```
 
 #### 1.4.4 调用合约
 
-// TODO
+
 
 ### 1.5 Variables 
 
