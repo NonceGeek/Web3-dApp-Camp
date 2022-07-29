@@ -152,11 +152,24 @@ $ git clone git@github.com:WeLightProject/Web3-dApp-Camp.git
 $ cd Web3-dApp-Camp/move-dapp/my-counter
 ```
 
+Move的包管理工具为Move Package Manager(mpm),它类似于Rust的Cargo或者Node的NPM。
+可以通过`mpm package new my-counter`来创建一个新项目，典型的目录结构为:
+```
+my-counter
+├── Move.toml
+└── sources
+    └── MyCounter.move 
+```
+- sources用来存档Move的模块,它类似于与Java中的类文件。
+- Move.toml-用来存放配置文件：包括包的原数据、依赖和命名地址。
+- 上述文件构成一个Move包(Move Package)
+更详细的Move包管理参考[文档](https://starcoinorg.github.io/starcoin-cookbook/zh/docs/move/move-language/packages/)
+
 修改`move.toml`中的地址为你用来部署的地址。
 
 ![image-20220727123922351](https://tva1.sinaimg.cn/large/e6c9d24egy1h4ldrxbqt8j217o0h8gom.jpg)
 
-**// TODO：此处加上个知识点**
+
 
 编译：
 
@@ -168,6 +181,7 @@ $ mpm release
 
 ![image-20220727124134402](https://tva1.sinaimg.cn/large/e6c9d24egy1h4lducyft6j20es066jri.jpg)
 
+
 #### 1.3.2 控制台部署
 
 在 Starcoin Console 中执行如下命令即可部署：
@@ -175,6 +189,7 @@ $ mpm release
 ```bash
 starcoin% dev deploy [path to blob] -s [addr] -b
 ```
+> -s 即--sender,-b即--blocking，表示阻塞等待命令执行完成
 
 如果遇到账户被锁，用 `unlock`命令解锁即可。
 
@@ -188,18 +203,27 @@ account unlock [addr] -p [pwd]
 
 ![image-20220727124625807](https://tva1.sinaimg.cn/large/e6c9d24egy1h4ldz8jd7lj213s0lmju5.jpg)
 
-#### 1.3.3 控制台调用
+> 需要注意的是，在Move中代码存储在个人的地址上，而非像以太坊那样的公共地址上。因此合约部署后并不会创建新地址，当我们想要调用合约时需要采用部署合约人的地址+合约名来调用改合约。
 
-See in
+#### 1.3.3 [控制台调用](ttps://starcoinorg.github.io/starcoin-cookbook/docs/move/interacting-with-the-contract)
 
-> https://starcoinorg.github.io/starcoin-cookbook/docs/move/interacting-with-the-contract
+1. 调用 init_counter 脚本函数来初始化资源。
 
 ```
-starcoin% account execute-function --function 0x23dc2c167fcd16e28917765848e189ce::MyCounter::init_counter -s 0x23dc2c167fcd16e28917765848e189ce -b
+starcoin% account execute-function --function {MyCounterAddr-in-Move.toml}::MyCounter::init_counter -s 0x23dc2c167fcd16e28917765848e189ce -b
+```
+其中:
+- `{MyCounterAddr-in-Move.toml}::MyCounter::init_counter`为完整的函数链上地址，包括合约所在地址+包名+函数名。
+- -s 即--sender,-b即--blocking，表示阻塞等待命令执行完成
+
+2. 查看Counter资源
+```
 starcoin% state get resource 0x23dc2c167fcd16e28917765848e189ce 0x23dc2c167fcd16e28917765848e189ce::MyCounter::Counter
 ```
+在Move中合约的数据被称为`资源(resource)`，由于读取数据不改变链上状态，因此不需要-s -b，不会执行交易，也不消耗状态。
 
-**// TODO：更详细一点**
+> 感兴趣的同学可以试着调用`incr_counter`，并再次查看`Counter`是否+1.
+
 
 ### 1.4 Your First Move dApp / Starcoin dApp
 
