@@ -370,9 +370,10 @@ try {
  
 
 #### 1.4.4 操作资源
-在Move中合约的变量被称为资源，比如`Counter`，资源只能通过脚本间接来调用合约中的内容，而不能直接操作资源。本节的完整代码参见[Move 0x04](https://github.com/WeLightProject/Web3-dApp-Camp/tree/0x04).本节完成后共需要提交三个截图，在下文予以说明。
+在Move中合约的变量被称为资源，比如`Counter`，资源只能通过脚本间接来调用合约中的内容，而不能直接操作资源。本节的完整代码参见[MyCounter实例](https://github.com/WeLightProject/Web3-dApp-Camp/tree/main/move-dapp/my-counter)。本节完成后共需要提交三个截图，在下文予以说明。
 1.首先实现Counter资源的读取.
 将上一节的`Modal.js`中的内容覆盖掉,主要增加了三个按钮`Get Counter`，`Incr_counter`和`Incr_counter_by`;其中`app.jsx`中的下面这行函数调用了读取Counter资源的工具函数。
+
 ```
   const getCounter = async () => {
     let res = await getResource(COUNTER_ADDRESS, COUNTER_RESOURCE_ID)
@@ -410,7 +411,7 @@ export const IncreaseCounterBy = () => {}
 ```
 
 OK，现在点击`Get Counter`可以得到以下截图(截图任务1):
-![](/move-dapp/my-counter/front-end/IMG/1.4.4.1.png)
+![](https://tva1.sinaimg.cn/large/e6c9d24egy1h4pbuipv89j20x80bimy0.jpg)
 
 2. 实现incr
 这包括两部分：合约的对Counter资源的修改和前端显示。
@@ -587,7 +588,7 @@ export const IncreaseCounterBy = (props) => {
 };
 ```
 此时点击Incr_counter_by按钮，会弹出如下交易界面(截图任务3)：
-![](/move-dapp/my-counter/front-end/IMG/1.4.4.3.png)。等待交易成功即可。
+![](https://tva1.sinaimg.cn/large/e6c9d24egy1h4pbupakn1j21kj0u0q9p.jpg)。等待交易成功即可。
 
 本节的内容有点多，感谢大家follow到了最后，希望大家耐心完成并理解上述内容。
 
