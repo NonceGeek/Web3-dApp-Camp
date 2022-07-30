@@ -537,6 +537,7 @@ address TokenCreator{
 
 
    }
+
    module TokenWithSimpleMemo {
       use TokenCreator::Token;
       use StarcoinFramework::Account;
