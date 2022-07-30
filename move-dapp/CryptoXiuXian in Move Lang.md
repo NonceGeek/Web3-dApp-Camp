@@ -370,8 +370,226 @@ try {
  
 
 #### 1.4.4 操作资源
+在Move中合约的变量被称为资源，比如`Counter`，资源只能通过脚本间接来调用合约中的内容，而不能直接操作资源。本节的完整代码参见[Move 0x04](https://github.com/WeLightProject/Web3-dApp-Camp/tree/0x04).本节完成后共需要提交三个截图，在下文予以说明。
+1.首先实现Counter资源的读取.
+将上一节的`Modal.js`中的内容覆盖掉,主要增加了三个按钮`Get Counter`，`Incr_counter`和`Incr_counter_by`;其中`app.jsx`中的下面这行函数调用了读取Counter资源的工具函数。
+```
+  const getCounter = async () => {
+    let res = await getResource(COUNTER_ADDRESS, COUNTER_RESOURCE_ID)
+    setCounter(res.value)
+  }
+```
+下面重点实现上面这个函数，创建`src/txs/counter.tx.js`:
+```
+import { utils, bcs, encoding, } from "@starcoin/starcoin"
+import { starcoinProvider } from "../app";
+import { arrayify, hexlify } from '@ethersproject/bytes'
 
-// TODO
+export async function getResource(address, functionId) {
+    const resourceType = `${address}::${functionId}`
+    const resource = await starcoinProvider.getResource(address, resourceType)
+    console.log(resource)
+    return resource
+}
+```
+通过`getResource`读取，其参数为资源所在账户的`地址`(回忆一下Move中资源存储在个人账户而非公共合约账户)和`完整的资源地址`，它由`账户地址`+`module名`+`资源名`构成，这里`funcitonId`把`module名`+`资源名`组合了起来。
+
+为了方便后续对资源的读取，我们单独创建`/src/txs/config.js`定义所有相关的地址和functionId:
+```
+export const COUNTER_ADDRESS = "0x07Ffe973C72356C25e623E2470172A69"
+export const COUNTER_RESOURCE_ID = "MyCounter::Counter"
+export const INCR_COUNTER_FUNC_NAMW = "MyCounter::incr_counter"
+export const INCR_COUNTERBY_FUNC_NAME = "MyCounter::incr_counter_by"
+```
+修改其中的`COUNTER_ADDRESS`为您的账户地址。
+
+为了避免报错在`src/modal.jsx`最下面加入如下两行:
+```
+export const Counter = () => {}
+export const IncreaseCounterBy = () => {}
+```
+
+OK，现在点击`Get Counter`可以得到以下截图(截图任务1):
+![](/move-dapp/my-counter/front-end/IMG/1.4.4.1.png)
+
+2. 实现incr
+这包括两部分：合约的对Counter资源的修改和前端显示。
+首先实现合约调用,在`/src/txs/conter.tx.js`中增加以下内容:
+```
+export async function executeFunction(address, functionName, strTypeArgs = [], args = []) {
+
+    const functionId = `${address}::${functionName}`;
+    const tyArgs = utils.tx.encodeStructTypeTags(strTypeArgs);
+    if (args.length > 0) {
+        args[0] = (function () {
+            const se = new bcs.BcsSerializer();
+            se.serializeU64(BigInt(args[0].toString(10)));
+            return hexlify(se.getBytes());
+        })();
+    }
+    args = args.map(arg => arrayify(arg))
+    const scriptFunction = utils.tx.encodeScriptFunction(functionId, tyArgs, args);
+
+    const payloadInHex = (() => {
+        const se = new bcs.BcsSerializer();
+        scriptFunction.serialize(se);
+        return hexlify(se.getBytes());
+    })();
+
+    const txParams = {
+        data: payloadInHex,
+    };
+
+    const transactionHash = await starcoinProvider
+        .getSigner()
+        .sendUncheckedTransaction(txParams);
+    return transactionHash
+}
+```
+Starcoin中合约的调用分为四部分:
+1. 链接钱包(在app.jsx中我们已经连好了，只需要引入starcoinProvider)
+2. 生成交易内容
+3. 调用合约
+4. 等待交易确认
+现在关注的是交易内容生成，它主要包括三部分:
+- functionId：函数签名，本例为账户地址+模块名+函数名
+- tyArgs：这个比较晦涩，实际上定义的是转账的token类型而非参数类型，不需要转账时设置为[]即可，需要转账时设置为`0x01::STC::STC`
+- args: 函数的参数,本例为[]，后面我们会展示包含一个参数的例子
+
+调用交易则是最下面几行代码，调用后会返回交易的hash:
+```
+    const transactionHash = await starcoinProvider
+        .getSigner()
+        .sendUncheckedTransaction(txParams);
+```
+
+其次交易状态读取，这需要实现`app.jsx`中的`Counter`组件，删掉原来的:
+`export const Counter = () => {}`并在`Modal.js`最下面加入一下内容:
+```
+import { executeFunction } from "./txs/counter.tx";
+import { COUNTER_ADDRESS, INCR_COUNTER_FUNC_NAMW, INCR_COUNTERBY_FUNC_NAME } from "./txs/config";
+...
+export const Counter = (props) => {
+  const [hash, setHash] = useState('')
+  const [txStatus, setTxStatus] = useState()
+  useEffect(() => {
+    const incr_counter = async () => {
+      let txHash = await executeFunction(COUNTER_ADDRESS, INCR_COUNTER_FUNC_NAMW)
+      setHash(txHash)
+      let timer = setInterval(async () => {
+        const txnInfo = await starcoinProvider.getTransactionInfo(txHash);
+        setTxStatus(txnInfo.status)
+        if (txnInfo.status === "Executed") {
+          clearInterval(timer);
+        }
+      }, 500);
+    }
+    incr_counter()
+
+  }, [])
+
+  const { isShow } = useFadeIn();
+  return <div className={classnames(
+    "fixed top-2/4 left-2/4 -translate-x-2/4 -translate-y-2/4 rounded-2xl shadow-2xl w-3/4 p-6 bg-white duration-300",
+    isShow ? "opacity-100 scale-100" : "opacity-0 scale-50"
+  )}>
+    {hash && (
+      <div className="text-center mt-2 text-gray-500 break-all">
+        Transaction Hash: {hash}
+      </div>
+
+    )}
+    {txStatus ? <div style={{ "textAlign": "Center" }}>{txStatus}</div> : null}
+  </div>
+}
+export const IncreaseCounterBy = () => {}
+```
+我们不断轮询读取交易状态`await starcoinProvider.getTransactionInfo(txHash);`，知道交易成功。点击`Incr_counter`交易成功后应该看到如下界面(截图任务2):
+![](/move-dapp/my-counter/front-end/IMG/1.4.4.2.png)
+
+3. 实现带参数的资源调用
+我们的目的是增加一个函数，可以输入需要增加的值X，然后对Counter加上X。首先修改上节的`MyCounter.move`增加以下代码:
+```
+     public fun incr_by(account: &signer, increasement: u64) acquires Counter {
+        let counter = borrow_global_mut<Counter>(Signer::address_of(account));
+        counter.value = counter.value + increasement;
+     }
+     
+     public(script) fun incr_counter_by(account: signer,increasement: u64)  acquires Counter {
+        Self::incr_by(&account, increasement)
+     }
+```
+然后到`my-counter`文件夹下进行编译`mpm release`，
+再进行部署,注意一定要先把dev测试网启动了，账户锁定需要解锁:
+```
+dev deploy [path to blob] -s [addr] -b
+```
+然后实现对改合约的调用，由于我们的`counter.tx.js`是一个通用的合约调用函数，因此不需要再针对incr_counter_by单独实现调用函数。只需要修改`/src/Modal.jsx`中的`IncreaseCounterBy`函数的内容，传入正确的合约调用参数即可:
+```
+export const IncreaseCounterBy = (props) => {
+  const [plus, setPlus] = useState(2)
+  const [txHash, setTxHash] = useState()
+  const [disabled, setDisabled] = useState(false)
+  const [txStatus, setTxStatus] = useState()
+  const handleCall = () => {
+    setDisabled(true)
+    setTxStatus("Pending...")
+    const incr_counter_by = async () => {
+      const tyArgs = []
+      const args = [parseInt(plus)]
+      let txHash = await executeFunction(COUNTER_ADDRESS, INCR_COUNTERBY_FUNC_NAME, tyArgs, args)
+      setTxHash(txHash)
+      let timer = setInterval(async () => {
+        const txnInfo = await starcoinProvider.getTransactionInfo(txHash);
+        setTxStatus(txnInfo.status)
+        if (txnInfo.status === "Executed") {
+          setDisabled(false)
+          clearInterval(timer);
+        }
+      }, 500);
+    }
+    incr_counter_by()
+
+  }
+  const { isShow } = useFadeIn();
+
+  return (
+    <div
+      className={classnames(
+        "fixed top-2/4 left-2/4 -translate-x-2/4 -translate-y-2/4 rounded-2xl shadow-2xl w-3/4 p-6 bg-white duration-300",
+        isShow ? "opacity-100 scale-100" : "opacity-0 scale-50"
+      )}
+    >
+      <div className="font-bold">To</div>
+      <div className="mt-2 mb-2">
+        <input
+          type="text"
+          className="focus:outline-none rounded-xl border-2 border-slate-700 w-full p-4"
+          value={plus}
+          onChange={(e) => setPlus(e.target.value)}
+        />
+      </div>
+      <div
+        className="mt-6 p-4 flex justify-center font-bold bg-blue-900 text-white rounded-lg hover:bg-blue-700 cursor-pointer"
+        onClick={handleCall}
+        disabled={disabled}
+      >
+        CALL
+      </div>
+      {txHash && (
+        <div className="text-center mt-2 text-gray-500 break-all">
+          Transaction: {txHash}
+        </div>
+      )}
+      {txStatus ? <div style={{ "textAlign": "Center" }}>{txStatus}</div> : null}
+    </div>
+  );
+};
+```
+此时点击Incr_counter_by按钮，会弹出如下交易界面(截图任务3)：
+![](/move-dapp/my-counter/front-end/IMG/1.4.4.3.png)。等待交易成功即可。
+
+本节的内容有点多，感谢大家follow到了最后，希望大家耐心完成并理解上述内容。
 
 ### 1.5 Variables 
 
