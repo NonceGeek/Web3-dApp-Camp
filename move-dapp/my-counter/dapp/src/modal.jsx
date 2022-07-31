@@ -59,7 +59,7 @@ export const Account = (props) => {
   const { initAccount, initAmount, initExpired } = props;
   const { isShow } = useFadeIn();
   const [account, setAccount] = useState(
-    initAccount || "0x46ecE7c1e39fb6943059565E2621b312"
+    initAccount || "0x1168e88ffc5cec53b398b42d61885bbb"
   );
   const [amount, setAmount] = useState(initAmount || "0.001");
   const [expired, setExpired] = useState(initExpired || "1800");
@@ -67,8 +67,7 @@ export const Account = (props) => {
 
   const handleCall = useCallback(async () => {
     try {
-      const contractAddr = "0x07Ffe973C72356C25e623E2470172A69"
-      const functionId = `${contractAddr}::MyCounter::init_counter`;
+      const functionId = `${COUNTER_ADDRESS}::MyCounter::init_counter`;
       const strTypeArgs = [];
       const tyArgs = utils.tx.encodeStructTypeTags(strTypeArgs);
       const args = [];

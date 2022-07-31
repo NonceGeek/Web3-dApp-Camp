@@ -367,8 +367,6 @@ try {
       );
 ```
 
- 
-
 #### 1.4.4 操作资源
 在Move中合约的变量被称为资源，比如`Counter`，资源只能通过脚本间接来调用合约中的内容，而不能直接操作资源。本节的完整代码参见[MyCounter实例](https://github.com/WeLightProject/Web3-dApp-Camp/tree/main/move-dapp/my-counter)。本节完成后共需要提交三个截图，在下文予以说明。
 1.首先实现Counter资源的读取.

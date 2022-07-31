@@ -30,7 +30,7 @@ const gas = {
 export const App = () => {
   // Send STC默认信息
   const [defaultToAddr, setAddr] = useState(
-    "0x46ecE7c1e39fb6943059565E2621b312"
+    "0x1168e88ffc5cec53b398b42d61885bbb"
   );
   // Send STC默认信息
   const [defaultAmount, setAmount] = useState("0.001");
