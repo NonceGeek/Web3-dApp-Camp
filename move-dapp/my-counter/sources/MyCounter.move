@@ -12,6 +12,10 @@ module MyCounterAddr::MyCounter {
         counter.value = counter.value + 1;
      }
 
+     public fun incr_by(account: &signer, increasement: u64) acquires Counter {
+        let counter = borrow_global_mut<Counter>(Signer::address_of(account));
+        counter.value = counter.value + increasement;
+     }
 
      public(script) fun init_counter(account: signer){
         Self::init(&account)
@@ -19,11 +23,6 @@ module MyCounterAddr::MyCounter {
 
      public(script) fun incr_counter(account: signer)  acquires Counter {
         Self::incr(&account)
-     }
-
-     public fun incr_by(account: &signer, increasement: u64) acquires Counter {
-        let counter = borrow_global_mut<Counter>(Signer::address_of(account));
-        counter.value = counter.value + increasement;
      }
      
      public(script) fun incr_counter_by(account: signer,increasement: u64)  acquires Counter {

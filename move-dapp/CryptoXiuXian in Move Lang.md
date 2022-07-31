@@ -83,7 +83,7 @@ struct Counter has key, store {
      }
 ```
 使用struct定义了一个叫做Counter的结构体，同时被 key,store两种限制符修饰，Move的类型系统灵活，每种类型都可以被四种限制符所修饰。这四种限制符我们称之为 abilities，它们定义了类型的值是否可以被复制、丢弃和存储。
-这四种 abilities 限制符分别是: Copy, Drop, Store 和 Key.
+这四种 abilities 限制符分别是: Copy, Drop, Store 和 Key。
 
 它们的功能分别是： 
 - Copy - 被修饰的值可以被复制。 
@@ -91,7 +91,7 @@ struct Counter has key, store {
 - Key - 被修饰的值可以作为键值对全局状态进行访问。 
 - Store - 被修饰的值可以被存储到全局状态。
 
-这里用key,store修饰，则表示它不能被复制，也不能被丢弃或重新使用，但是它却可以被安全地存储和转移。
+这里用key、store修饰，则表示它不能被复制，也不能被丢弃或重新使用，但是它却可以被安全地存储和转移。
 
 下面则是定义的方法，
 ```rust
@@ -291,7 +291,7 @@ starcoin% account export 0x23dc2c167fcd16e28917765848e189ce
 
 ![image-20220729093132604](https://tva1.sinaimg.cn/large/e6c9d24egy1h4njn0wdfyj21gc0skdjy.jpg)
 
-#### 1.4.3 函数调用
+#### 1.4.3 修改调用代码
 
 调整 demo 中的合约。首先我们定位到相关代码处：
 
@@ -367,7 +367,15 @@ try {
       );
 ```
 
-#### 1.4.4 操作资源
+#### 1.4.4 调用函数
+
+打开`http://localhost:3000`，即可成功调用智能合约的函数。
+
+![image](/Users/liaohua/Documents/e6c9d24egy1h4pt7cu4l5j20sd0o8wfz.png)
+
+![image](/Users/liaohua/Documents/e6c9d24egy1h4pt7i3qgkj20ai0hvq3i.png)
+
+#### 1.4.5 操作资源
 在Move中合约的变量被称为资源，比如`Counter`，资源只能通过脚本间接来调用合约中的内容，而不能直接操作资源。本节的完整代码参见[MyCounter实例](https://github.com/WeLightProject/Web3-dApp-Camp/tree/main/move-dapp/my-counter)。本节完成后共需要提交三个截图，在下文予以说明。
 1.首先实现Counter资源的读取.
 将上一节的`Modal.js`中的内容覆盖掉,主要增加了三个按钮`Get Counter`，`Incr_counter`和`Incr_counter_by`;其中`app.jsx`中的下面这行函数调用了读取Counter资源的工具函数。
@@ -592,13 +600,63 @@ export const IncreaseCounterBy = (props) => {
 
 ## 0x02 Move Contract + dApp 案例
 
-### 2.1 PurposeHandler
+### 2.1 MyLibrary
 
-#### 2.1.1 合约实战
+#### 2.1.1 Types with Abilities
 
-#### 2.1.2 dApp实战
+> https://move-book.com/advanced-topics/types-with-abilities.html#types-with-abilities
+>
+> https://move-book.com/cn/advanced-topics/types-with-abilities.html
 
-#### 2.1.3 知识点分析
+Move 的类型系统非常灵活，每种类型都可以定义四种能力（abilities）。它们决定了类型的值是否可以被「使用、丢弃和存储」。
+
+> 这四种 abilities 能力分别是: Copy, Drop, Store 和 Key。
+
+它们的功能分别是：
+
+- **Copy** - 值可以被**复制**。
+- **Drop** - 在作用域（Scope）结束时值可以被**丢弃**。
+- **Key** - 值可以作为**键值（Key）**被「全局存储操作（ global storage operations）」进行**访问**。
+- **Store** - 值可以被 **存储** 到全局状态。
+
+在 `1.3` 一节中，我们已经初步接触到了 Abilities。在本实例中，我们将进一步的通过 Play with Abilities 掌握其原理。
+
+#### 2.1.2 Abilities 的语法
+
+> 基本类型和内建类型的 abilities 是预先定义好的并且不可改变: integers, vector, addresses 和 boolean 类型的值先天具有 copy、drop 和 store ability。
+
+然而，结构体的 ability 可以按照下面的语法进行添加：
+
+```Move
+struct NAME has ABILITY [, ABILITY] { [FIELDS] }
+```
+
+一个图书馆的例子：
+
+```rust
+module Library {
+    
+    // each ability has matching keyword
+    // multiple abilities are listed with comma
+    struct Book has store, copy, drop {
+        year: u64
+    }
+
+    // single ability is also possible
+    struct Storage has key {
+        books: vector<Book>
+    }
+
+    // this one has no abilities 
+    struct Empty {}
+}
+```
+
+#### 2.1.3 合约实战
+
+#### 2.1.4 dApp实战
+
+#### 2.1.5 知识点分析
 
 ### 2.2 MyToken
 
