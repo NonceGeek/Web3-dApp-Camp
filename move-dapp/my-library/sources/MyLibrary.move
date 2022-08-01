@@ -1,6 +1,6 @@
-module MyAddr::MyLibraryV4 {
-   // use StarcoinFramework::Signer;
-
+module MyAddr::MyLibrary {
+   use StarcoinFramework::Signer;
+   use StarcoinFramework::Vector;
    // each ability has matching keyword
    // multiple abilities are listed with comma
    struct Book has store, copy, drop {
@@ -14,14 +14,42 @@ module MyAddr::MyLibraryV4 {
       books: vector<Book>
    }
 
-   // TODO: A Library can CRUD the Books.
+   public fun create_library(account: &signer){
+      move_to<Library>(account, Library{books: Vector::empty<Book>()});
+   }
+   //because the script function cannot have return value,
+   //query only can be done by: state get resource Addr Addr::MyLibraryV4::Library
+   public fun addBook(account: &signer,name:vector<u8>, link: vector<u8>) acquires  Library {
+      let lib = borrow_global_mut<Library>(Signer::address_of(account));
+      let id = Vector::length(&lib.books);
+      Vector::push_back(&mut lib.books, Book{id:id,name:name,link:link});
+   }
 
-   // public fun create(account: &signer, the_id: u64, the_name: vector<u8>){
-   //    Book{id: the_id, name: the_name};
-   // }
+   public fun updateBookAtId(account: &signer,id:u64,name:vector<u8>, link: vector<u8>) acquires  Library {
+      let lib = borrow_global_mut<Library>(Signer::address_of(account));
+      let book = Vector::borrow_mut<Book>(&mut lib.books,id);
+      book.name = name;
+      book.link = link;
+   }
 
-   // public(script) fun create_book(account: signer, the_id: u64, the_name: vector<u8>){
-   //    Self::create(&account, the_id, the_name)
-   // }
+   public fun deleteBookAtId(account: &signer,id:u64) acquires  Library {
+      let lib = borrow_global_mut<Library>(Signer::address_of(account));
+      Vector::remove(&mut lib.books, id);
+   }
 
+   public(script) fun init_library(account: signer){
+      Self::create_library(&account)
+   }
+
+   public(script) fun s_add_book(account: signer, name:vector<u8>, link: vector<u8>) acquires  Library {
+      Self::addBook(&account,name, link)
+   }
+
+   public(script) fun s_update_book_at_id(account: signer, id:u64,name:vector<u8>, link: vector<u8>) acquires  Library {
+      Self::updateBookAtId(&account,id,name,link)
+   }
+
+   public(script) fun s_delete_book_at_id(account: signer, id:u64) acquires  Library {
+      Self::deleteBookAtId(&account,id)
+   }
 }

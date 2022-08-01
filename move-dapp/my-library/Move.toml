@@ -1,10 +1,10 @@
 [package]
 name = "my_library"
-version = "0.0.2"
+version = "0.0.3"
 
 [addresses]
 StarcoinFramework = "0x1"
-MyAddr = "0x1168e88ffc5cec53b398b42d61885bbb"
+MyAddr = "0x07Ffe973C72356C25e623E2470172A69"
 
 [dependencies]
 StarcoinFramework = {git = "https://github.com/starcoinorg/starcoin-framework.git", rev="cf1deda180af40a8b3e26c0c7b548c4c290cd7e7"}
