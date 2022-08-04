@@ -1,4 +1,4 @@
-module MyAddr::MyLibrary {
+module MyAddr::MyLibraryV5 {
    use StarcoinFramework::Signer;
    use StarcoinFramework::Vector;
    // each ability has matching keyword
