@@ -20,12 +20,14 @@ const { isStarMaskInstalled } = StarMaskOnboarding;
 
 const onboarding = new StarMaskOnboarding({ forwarderOrigin });
 
+
 const BIG_NUMBER_NANO_STC_MULTIPLIER = new BigNumber("1000000000");
 
 const gas = {
   gasLimit: 127845,
   gasPrice: 1,
 };
+
 
 export const App = () => {
   // Send STC默认信息
@@ -62,6 +64,15 @@ export const App = () => {
     setConnected(newAccounts && newAccounts.length > 0);
   }, []);
 
+  const listenMessage = useCallback(() => {
+    window.addEventListener('message', (e) => {
+      if (e.data.data && e.data.data.data && e.data.data.data.method == "starmask_chainChanged") {
+        console.log("starmask_chainChanged")
+        freshConnected()
+      }
+    })
+  }, [])
+
   useEffect(() => {
     if (!isStarMaskInstalled()) {
       setInstall(false);
@@ -91,6 +102,7 @@ export const App = () => {
     } else {
       freshConnected();
     }
+    listenMessage()
   }, [freshConnected, isStarMaskConnected]);
 
   const handleSendSTC = useCallback(async () => {
