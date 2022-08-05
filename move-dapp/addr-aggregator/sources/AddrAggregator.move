@@ -5,6 +5,7 @@ module MyAddr::AddrAggregator {
 
    struct AddrInfo has store, copy, drop {
       addr: address,
+      description: vector<u8>,
       chain_name: vector<u8>,
       signature: vector<u8>
    }
@@ -13,7 +14,6 @@ module MyAddr::AddrAggregator {
       key_addr: address,
       addr_infos: vector<AddrInfo>
    }
-
 
    public fun create_addr_aggregator(acct: &signer){
       let addr_aggr =  AddrAggregator{
@@ -24,57 +24,43 @@ module MyAddr::AddrAggregator {
    }
 
    /// add addr without signature is permitted, and the owner can add signature later.
-   public fun add_addr(acct: &signer, addr: address, chain_name: vector<u8>, signature: Option<vector<u8>>) acquires AddrAggregator{
-      if (Option::is_some<vector<u8>>(&signature)) {
-         do_add_addr(acct, addr, chain_name, Option::destroy_some<vector<u8>>(signature));
+   public fun add_addr(
+      acct: &signer, 
+      addr: address, 
+      chain_name: vector<u8>, 
+      description: vector<u8>,
+      msg: Option<vector<u8>>,
+      signature: Option<vector<u8>>) acquires AddrAggregator{
+      if (Option::is_some<vector<u8>>(&signature) && Option::is_some<vector<u8>>(&msg)) {
+         // TODO:
+         // verify the format of msg is valid
+         // verify the signature for the msg addr_chain_name_timestamp
+         // verify the timestamp - timestamp_now >= 2h is true
+         // then add addr
+         do_add_addr(acct, addr, chain_name, description, Option::destroy_some<vector<u8>>(signature));
       } else {
-         do_add_addr(acct, addr, chain_name, Vector::empty());
+         do_add_addr(acct, addr, chain_name, description, Vector::empty());
       }
    }
 
-   public fun do_add_addr(acct: &signer, addr: address, chain_name: vector<u8>, signature: vector<u8>) acquires AddrAggregator{
+   public fun do_add_addr(
+      acct: &signer, 
+      addr: address, 
+      chain_name: vector<u8>, 
+      description: vector<u8>,
+      signature: vector<u8>) acquires AddrAggregator{
       let addr_aggr = borrow_global_mut<AddrAggregator>(Signer::address_of(acct));
       let addr_info = AddrInfo{
          addr: addr, 
          chain_name: chain_name,
+         description, description,
          signature: signature
       };
       Vector::push_back(&mut addr_aggr.addr_infos, addr_info);
    }
-
-   // //because the script function cannot have return value,
-   // //query only can be done by: state get resource Addr Addr::MyLibraryV4::Library
-   // public fun addBook(account: &signer,name:vector<u8>, link: vector<u8>) acquires  Library {
-   //    let lib = borrow_global_mut<Library>(Signer::address_of(account));
-   //    let id = Vector::length(&lib.books);
-   //    Vector::push_back(&mut lib.books, Book{id:id,name:name,link:link});
-   // }
-
-   // public fun updateBookAtId(account: &signer,id:u64,name:vector<u8>, link: vector<u8>) acquires  Library {
-   //    let lib = borrow_global_mut<Library>(Signer::address_of(account));
-   //    let book = Vector::borrow_mut<Book>(&mut lib.books,id);
-   //    book.name = name;
-   //    book.link = link;
-   // }
-
-   // public fun deleteBookAtId(account: &signer,id:u64) acquires  Library {
-   //    let lib = borrow_global_mut<Library>(Signer::address_of(account));
-   //    Vector::remove(&mut lib.books, id);
-   // }
-
-   // public(script) fun init_library(account: signer){
-   //    Self::create_library(&account)
-   // }
-
-   // public(script) fun s_add_book(account: signer, name:vector<u8>, link: vector<u8>) acquires  Library {
-   //    Self::addBook(&account,name, link)
-   // }
-
-   // public(script) fun s_update_book_at_id(account: signer, id:u64,name:vector<u8>, link: vector<u8>) acquires  Library {
-   //    Self::updateBookAtId(&account,id,name,link)
-   // }
-
-   // public(script) fun s_delete_book_at_id(account: signer, id:u64) acquires  Library {
-   //    Self::deleteBookAtId(&account,id)
-   // }
+   // TODO:
+   // public fun update addr with sig
+   // public fun update addr with description and sig
+   // public fun delete addr
+   
 }
