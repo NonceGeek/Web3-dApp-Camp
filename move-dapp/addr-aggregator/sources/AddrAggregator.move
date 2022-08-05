@@ -1,7 +1,7 @@
 module MyAddr::AddrAggregator {
    use StarcoinFramework::Vector;
    use StarcoinFramework::Signer;
-   use StarcoinFramework::Option;
+   use StarcoinFramework::Option::{Self, Option};
 
    struct AddrInfo has store, copy, drop {
       addr: address,
@@ -25,7 +25,7 @@ module MyAddr::AddrAggregator {
 
    /// add addr without signature is permitted, and the owner can add signature later.
    public fun add_addr(acct: &signer, addr: address, chain_name: vector<u8>, signature: Option<vector<u8>>) acquires AddrAggregator{
-      if (Option::is_some(&signature)) {
+      if (Option::is_some<vector<u8>>(&signature)) {
          do_add_addr(acct, addr, chain_name, Option::destroy_some<vector<u8>>(signature));
       } else {
          do_add_addr(acct, addr, chain_name, Vector::empty());
