@@ -53,7 +53,7 @@ module MyAddr::AddrAggregator {
       let addr_info = AddrInfo{
          addr: addr, 
          chain_name: chain_name,
-         description, description,
+         description: description,
          signature: signature
       };
       Vector::push_back(&mut addr_aggr.addr_infos, addr_info);

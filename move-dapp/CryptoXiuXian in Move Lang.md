@@ -215,7 +215,9 @@ account unlock [addr] -p [pwd]
 1. 调用 init_counter 脚本函数来初始化资源。
 
 ```
-starcoin% account execute-function --function {MyCounterAddr-in-Move.toml}::MyCounter::init_counter -s 0x23dc2c167fcd16e28917765848e189ce -b
+starcoin% account execute-function --function {MyCounterAddr-in-Move.toml}::MyCounter::init_counter -s 0x23dc2c167fcd16e28917765848e189ce -b # call the script fun
+
+# starcoin% dev call --function 0x1168e88ffc5cec53b398b42d61885bbb::EthSigVerifier::verify_eth_sig --arg x"90a938f7457df6e8f741264c32697fc52f9a8f867c52dd70713d9d2d472f2e415d9c94148991bbe1f4a1818d1dff09165782749c877f5cf1eff4ef126e55714d1c" --arg x"29c76e6ad8f28bb1004902578fb108c507be341b" --arg x"b453bd4e271eed985cbab8231da609c4ce0a9cf1f763b6c1594e76315510e0f1" # call the fun(no script)
 ```
 其中:
 - `{MyCounterAddr-in-Move.toml}::MyCounter::init_counter`为完整的函数链上地址，包括合约所在地址+包名+函数名。
