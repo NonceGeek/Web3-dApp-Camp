@@ -68,6 +68,8 @@ source_path |> File.read!() |> Code.string_to_quoted()
 
 ### 模块的 AST 结构
 
+![Elixir Module AST structure](https://github.com/kenspirit/blog-cdn-data/raw/master/elixir-module-ast-inspect.png)
+
 通过比较 Elixir 源代码和生成的 AST 数据结构，整个模块的 AST 其实也是符合上面文档展示出来的基本结构的。一个模块的定义其实也是 `:defmodule` 宏的调用。它的参数列表包含了一个别名和 `do` 代码块：
 
 ```elixir
