@@ -3,10 +3,10 @@ import BigNumber from "bignumber.js";
 import classnames from "classnames";
 import { providers } from "@starcoin/starcoin";
 import StarMaskOnboarding from "@starcoin/starmask-onboarding";
-import { Account, Mask, makeModal, Counter, IncreaseCounterBy } from "./modal";
+import { InitLibrary, Mask, makeModal, AddBook } from "./modal";
 import "./style.css";
 import { getResource } from "./txs/counter.tx";
-import { COUNTER_ADDRESS, COUNTER_RESOURCE_ID } from "./txs/config";
+import { LIBRARY_ADDRESS, LIBRARY_RESOURCE_ID } from "./txs/config";
 
 export let starcoinProvider;
 
@@ -52,7 +52,7 @@ export const App = () => {
 
   const [isInstall, setInstall] = useState(true);
 
-  const [counter, setCounter] = useState(0);
+  const [resource, setResource] = useState({});
 
   const freshConnected = useCallback(async () => {
     const newAccounts = await window.starcoin.request({
@@ -128,9 +128,9 @@ export const App = () => {
     }
   }, [defaultToAddr, defaultExpired, defaultAmount]);
 
-  const getCounter = async () => {
-    let res = await getResource(COUNTER_ADDRESS, COUNTER_RESOURCE_ID)
-    setCounter(res.value)
+  const getLibrary = async () => {
+    let res = await getResource(LIBRARY_ADDRESS, LIBRARY_RESOURCE_ID)
+    alert(JSON.stringify(res))
   }
   return (
     <div className="tracking-widest">
@@ -258,37 +258,20 @@ export const App = () => {
                           return (
                             <>
                               <Mask onClose={onClose} />
-                              <Account />
+                              <InitLibrary />
                             </>
                           );
                         },
                       });
                     }}
                   >
-                    Init_counter
+                    init_library
                   </div>
                   <div
                     className="mt-4 rounded-2xl bg-blue-900 flex justify-center text-white p-4 font-bold cursor-pointer hover:bg-blue-700 duration-300"
-                    onClick={() => getCounter()}
+                    onClick={() => getLibrary()}
                   >
-                    Get Counter:{counter}
-                  </div>
-                  <div
-                    className="mt-4 rounded-2xl bg-blue-900 flex justify-center text-white p-4 font-bold cursor-pointer hover:bg-blue-700 duration-300"
-                    onClick={() => {
-                      makeModal({
-                        children: ({ onClose }) => {
-                          return (
-                            <>
-                              <Mask onClose={onClose} />
-                              <Counter />
-                            </>
-                          );
-                        },
-                      });
-                    }}
-                  >
-                    Incr_counter
+                    Get Library(Read Resource)
                   </div>
                   <div
                     className="mt-4 rounded-2xl bg-blue-900 flex justify-center text-white p-4 font-bold cursor-pointer hover:bg-blue-700 duration-300"
@@ -298,14 +281,14 @@ export const App = () => {
                           return (
                             <>
                               <Mask onClose={onClose} />
-                              <IncreaseCounterBy />
+                              <AddBook />
                             </>
                           );
                         },
                       });
                     }}
                   >
-                    Incr_counter_by
+                    add_book
                   </div>
                 </div>
               </div>

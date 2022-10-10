@@ -8,7 +8,7 @@ import { arrayify, hexlify } from "@ethersproject/bytes";
 import { utils, bcs } from "@starcoin/starcoin";
 import { starcoinProvider } from "./app";
 import { executeFunction } from "./txs/counter.tx";
-import { COUNTER_ADDRESS, INCR_COUNTER_FUNC_NAMW, INCR_COUNTERBY_FUNC_NAME } from "./txs/config";
+import { LIBRARY_ADDRESS, INIT_LIBRARY_FUNC_NAME, S_ADD_BOOK_FUNC_NAME } from "./txs/config";
 
 
 export const makeModal = (props) => {
@@ -55,11 +55,11 @@ export const Mask = (props) => {
   );
 };
 
-export const Account = (props) => {
-  const { initAccount, initAmount, initExpired } = props;
+export const InitLibrary = (props) => {
+  const { initAmount, initExpired } = props;
   const { isShow } = useFadeIn();
   const [account, setAccount] = useState(
-    initAccount || "0x1168e88ffc5cec53b398b42d61885bbb"
+    LIBRARY_ADDRESS || "0x1168e88ffc5cec53b398b42d61885bbb"
   );
   const [amount, setAmount] = useState(initAmount || "0.001");
   const [expired, setExpired] = useState(initExpired || "1800");
@@ -67,7 +67,7 @@ export const Account = (props) => {
 
   const handleCall = useCallback(async () => {
     try {
-      const functionId = `${COUNTER_ADDRESS}::MyCounter::init_counter`;
+      const functionId = `${LIBRARY_ADDRESS}::${INIT_LIBRARY_FUNC_NAME}`;
       const strTypeArgs = [];
       const tyArgs = utils.tx.encodeStructTypeTags(strTypeArgs);
       const args = [];
@@ -158,42 +158,8 @@ export const Account = (props) => {
   );
 };
 
-export const Counter = (props) => {
-  const [hash, setHash] = useState('')
-  const [txStatus, setTxStatus] = useState()
-  useEffect(() => {
-    const incr_counter = async () => {
-      let txHash = await executeFunction(COUNTER_ADDRESS, INCR_COUNTER_FUNC_NAMW)
-      setHash(txHash)
-      let timer = setInterval(async () => {
-        const txnInfo = await starcoinProvider.getTransactionInfo(txHash);
-        setTxStatus(txnInfo.status)
-        if (txnInfo.status === "Executed") {
-          clearInterval(timer);
-        }
-      }, 500);
-    }
-    incr_counter()
-
-  }, [])
-
-  const { isShow } = useFadeIn();
-  return <div className={classnames(
-    "fixed top-2/4 left-2/4 -translate-x-2/4 -translate-y-2/4 rounded-2xl shadow-2xl w-3/4 p-6 bg-white duration-300",
-    isShow ? "opacity-100 scale-100" : "opacity-0 scale-50"
-  )}>
-    {hash && (
-      <div className="text-center mt-2 text-gray-500 break-all">
-        Transaction Hash: {hash}
-      </div>
-
-    )}
-    {txStatus ? <div style={{ "textAlign": "Center" }}>{txStatus}</div> : null}
-  </div>
-}
-
-
-export const IncreaseCounterBy = (props) => {
+// TODO: Finish AddBook
+export const AddBook = (props) => {
   const [plus, setPlus] = useState(2)
   const [txHash, setTxHash] = useState()
   const [disabled, setDisabled] = useState(false)
@@ -201,10 +167,10 @@ export const IncreaseCounterBy = (props) => {
   const handleCall = () => {
     setDisabled(true)
     setTxStatus("Pending...")
-    const incr_counter_by = async () => {
+    const add_book = async () => {
       const tyArgs = []
       const args = [parseInt(plus)]
-      let txHash = await executeFunction(COUNTER_ADDRESS, INCR_COUNTERBY_FUNC_NAME, tyArgs, args)
+      let txHash = await executeFunction(LIBRARY_ADDRESS, S_ADD_BOOK_FUNC_NAME, tyArgs, args)
       setTxHash(txHash)
       let timer = setInterval(async () => {
         const txnInfo = await starcoinProvider.getTransactionInfo(txHash);
@@ -215,7 +181,7 @@ export const IncreaseCounterBy = (props) => {
         }
       }, 500);
     }
-    incr_counter_by()
+    add_book()
 
   }
   const { isShow } = useFadeIn();
