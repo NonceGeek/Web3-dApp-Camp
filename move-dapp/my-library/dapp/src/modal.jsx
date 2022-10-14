@@ -6,10 +6,10 @@ import { createRoot } from "react-dom/client";
 import { useCallback } from "react";
 import { arrayify, hexlify } from "@ethersproject/bytes";
 import { utils, bcs } from "@starcoin/starcoin";
+import encoding from '@starcoin/starcoin';
 import { starcoinProvider } from "./app";
-import { executeFunction } from "./txs/counter.tx";
+import { executeFunction,executeFunction2 } from "./txs/counter.tx";
 import { LIBRARY_ADDRESS, INIT_LIBRARY_FUNC_NAME, S_ADD_BOOK_FUNC_NAME } from "./txs/config";
-
 
 export const makeModal = (props) => {
   const { children } = props;
@@ -160,7 +160,9 @@ export const InitLibrary = (props) => {
 
 // TODO: Finish AddBook
 export const AddBook = (props) => {
-  const [plus, setPlus] = useState(2)
+ const utf8Encode = new TextEncoder();
+  const [name, setName] = useState("")
+  const [link, setLink] = useState("")
   const [txHash, setTxHash] = useState()
   const [disabled, setDisabled] = useState(false)
   const [txStatus, setTxStatus] = useState()
@@ -169,8 +171,12 @@ export const AddBook = (props) => {
     setTxStatus("Pending...")
     const add_book = async () => {
       const tyArgs = []
-      const args = [parseInt(plus)]
-      let txHash = await executeFunction(LIBRARY_ADDRESS, S_ADD_BOOK_FUNC_NAME, tyArgs, args)
+        console.log(name)
+        console.log(link)
+//        const args = [`x\"${ name }\"`,`x\"${ link }\"`]
+        const args = [name,link]
+
+        let txHash = await executeFunction2(LIBRARY_ADDRESS, S_ADD_BOOK_FUNC_NAME, tyArgs, args)
       setTxHash(txHash)
       let timer = setInterval(async () => {
         const txnInfo = await starcoinProvider.getTransactionInfo(txHash);
@@ -198,10 +204,18 @@ export const AddBook = (props) => {
         <input
           type="text"
           className="focus:outline-none rounded-xl border-2 border-slate-700 w-full p-4"
-          value={plus}
-          onChange={(e) => setPlus(e.target.value)}
+          value={name}
+          onChange={(e) => setName(e.target.value)}
         />
       </div>
+        <div className="mt-2 mb-2">
+            <input
+                type="text"
+                className="focus:outline-none rounded-xl border-2 border-slate-700 w-full p-4"
+                value={link}
+                onChange={(e) => setLink(e.target.value)}
+            />
+        </div>
       <div
         className="mt-6 p-4 flex justify-center font-bold bg-blue-900 text-white rounded-lg hover:bg-blue-700 cursor-pointer"
         onClick={handleCall}
