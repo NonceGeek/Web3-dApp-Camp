@@ -52,7 +52,7 @@ export const App = () => {
   // 已连接账户
   const [account, setAccount] = useState([]);
 
-  const [activeAccount, setActiveAccount] = useState([]);
+  const [activeAccount, setActiveAccount] = useState("");
 
   const [isInstall, setInstall] = useState(true);
 
