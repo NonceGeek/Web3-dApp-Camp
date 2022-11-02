@@ -1,9 +1,10 @@
 import { utils, bcs, encoding, } from "@starcoin/starcoin"
 import { starcoinProvider } from "../app";
 import { arrayify, hexlify } from '@ethersproject/bytes'
+import { COUNTER_ADDRESS } from "./txs/config";
 
 export async function getResource(address, functionId) {
-    const resourceType = `${address}::${functionId}`
+    const resourceType = `${COUNTER_ADDRESS}::${functionId}`
     const resource = await starcoinProvider.getResource(address, resourceType)
     console.log(resource)
     return resource
