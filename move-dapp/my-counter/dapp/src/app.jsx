@@ -6,7 +6,7 @@ import StarMaskOnboarding from "@starcoin/starmask-onboarding";
 import { Account, Mask, makeModal, Counter, IncreaseCounterBy } from "./modal";
 import "./style.css";
 import { getResource } from "./txs/counter.tx";
-import { COUNTER_ADDRESS, COUNTER_RESOURCE_ID } from "./txs/config";
+import { COUNTER_RESOURCE_ID } from "./txs/config";
 
 export let starcoinProvider;
 
@@ -52,6 +52,8 @@ export const App = () => {
   // 已连接账户
   const [account, setAccount] = useState([]);
 
+  const [activeAccount, setActiveAccount] = useState("");
+
   const [isInstall, setInstall] = useState(true);
 
   const [counter, setCounter] = useState(0);
@@ -62,6 +64,7 @@ export const App = () => {
     });
     setAccount([...newAccounts]);
     setConnected(newAccounts && newAccounts.length > 0);
+    setActiveAccount(newAccounts.length > 0 ? newAccounts[0] : "");
   }, []);
 
   const listenMessage = useCallback(() => {
@@ -141,7 +144,7 @@ export const App = () => {
   }, [defaultToAddr, defaultExpired, defaultAmount]);
 
   const getCounter = async () => {
-    let res = await getResource(COUNTER_ADDRESS, COUNTER_RESOURCE_ID)
+    let res = await getResource(activeAccount, COUNTER_RESOURCE_ID)
     setCounter(res.value)
   }
   return (
