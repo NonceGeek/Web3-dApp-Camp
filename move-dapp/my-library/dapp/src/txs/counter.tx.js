@@ -1,9 +1,10 @@
 import { utils, bcs, encoding, } from "@starcoin/starcoin"
 import { starcoinProvider } from "../app";
 import { arrayify, hexlify } from '@ethersproject/bytes'
+import { LIBRARY_ADDRESS } from "./config";
 
 export async function getResource(address, functionId) {
-    const resourceType = `${address}::${functionId}`
+    const resourceType = `${LIBRARY_ADDRESS}::${functionId}`
     console.log(resourceType)
     const resource = await starcoinProvider.getResource(address, resourceType)
     console.log(resource)
@@ -57,7 +58,7 @@ export async function executeFunction2(address, functionName, strTypeArgs = [], 
     const as = [
         arrayify(toNameHex),
         arrayify(tolinkHex),
-          ];
+    ];
     const scriptFunction = utils.tx.encodeScriptFunction(functionId, tyArgs, as);
 
     const payloadInHex = (() => {
@@ -71,8 +72,8 @@ export async function executeFunction2(address, functionName, strTypeArgs = [], 
     };
 
     const transactionHash = await starcoinProvider
-    .getSigner()
-    .sendUncheckedTransaction(txParams);
+        .getSigner()
+        .sendUncheckedTransaction(txParams);
     return transactionHash
 }
 

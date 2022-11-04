@@ -50,6 +50,8 @@ export const App = () => {
   // 已连接账户
   const [account, setAccount] = useState([]);
 
+  const [activeAddress, setActiveAddress] = useState("");
+
   const [isInstall, setInstall] = useState(true);
 
   const [resource, setResource] = useState({});
@@ -60,6 +62,7 @@ export const App = () => {
     });
     setAccount([...newAccounts]);
     setConnected(newAccounts && newAccounts.length > 0);
+    setActiveAddress(newAccounts.length > 0 ? newAccounts[0] : "")
   }, []);
 
   useEffect(() => {
@@ -129,7 +132,7 @@ export const App = () => {
   }, [defaultToAddr, defaultExpired, defaultAmount]);
 
   const getLibrary = async () => {
-    let res = await getResource(LIBRARY_ADDRESS, LIBRARY_RESOURCE_ID)
+    let res = await getResource(activeAddress, LIBRARY_RESOURCE_ID)
     alert(JSON.stringify(res))
   }
   return (
