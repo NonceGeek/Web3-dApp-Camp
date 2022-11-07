@@ -38,6 +38,7 @@ starcoin% account show 0xb7c46353c6c0e3a2559d5b12cad981e4
 # 创建新账户
 starcoin% account create -p [pwd]
 ```
+> 新账户记得同上获取测试代币STC，否则无法在该账户下进行任何需要消耗STC的操作，如：部署合约
 
 ### 1.3 Contract Framework
 
