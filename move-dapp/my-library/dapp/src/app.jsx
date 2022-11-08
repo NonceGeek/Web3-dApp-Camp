@@ -133,6 +133,11 @@ export const App = () => {
 
   const getLibrary = async () => {
     let res = await getResource(activeAddress, LIBRARY_RESOURCE_ID)
+    let books = res['books']
+    for (var item in books) {
+      books[item]['name'] = Buffer.from(books[item]['name'].slice(2), 'hex').toString('utf8')
+      books[item]['link'] = Buffer.from(books[item]['link'].slice(2), 'hex').toString('utf8')
+    }
     alert(JSON.stringify(res))
   }
   return (
