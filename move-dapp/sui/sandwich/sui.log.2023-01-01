@@ -1,0 +1,55 @@
+2023-01-01T03:21:51.440265Z  INFO sui::client_commands:                  Object ID                  |  Gas Value 
+2023-01-01T03:21:51.441234Z  INFO sui::client_commands: ----------------------------------------------------------------------
+2023-01-01T03:24:28.282832Z  INFO sui::client_commands: Created new keypair for address with scheme Secp256k1: [0xec274a77d11cdec9812a0ca2e5f0dba464dfaadc]
+2023-01-01T03:24:28.283416Z  INFO sui::client_commands: Secret Recovery Phrase : [vicious company congress furnace dismiss hazard clay cake truly impose valve basic]
+2023-01-01T03:26:08.773108Z  INFO sui::client_commands: Active address switched to 0xec274a77d11cdec9812a0ca2e5f0dba464dfaadc
+2023-01-01T03:35:43.710818Z  INFO sui::client_commands: Showing 2 results.
+2023-01-01T03:35:43.711277Z  INFO sui::client_commands: 0xd7e85aede1562e369ebe658e9bcd3a025f792a1e
+2023-01-01T03:35:43.711278Z  INFO sui::client_commands: 0xec274a77d11cdec9812a0ca2e5f0dba464dfaadc
+2023-01-01T03:36:58.337887Z  INFO sui::client_commands:                  Object ID                  |  Gas Value 
+2023-01-01T03:36:58.338832Z  INFO sui::client_commands: ----------------------------------------------------------------------
+2023-01-01T03:36:58.338834Z  INFO sui::client_commands:  0x520e1cecf280effc4f2129d5109f11be0c000d35 |  50000000  
+2023-01-01T03:37:43.642112Z  INFO sui::client_commands: [1m----- Certificate ----[0m
+2023-01-01T03:37:43.642848Z  INFO sui::client_commands: Transaction Hash: 2U84nEgz9QM94zH5mZ79Az1EVypF2WyzdWsCM14qAJZH
+2023-01-01T03:37:43.642850Z  INFO sui::client_commands: Transaction Signature: AQ==@NWIMieXVWuLTzM5gWnNHBTsZgEoUYg/mztbd58SR7+dKyrNFnDaUzHi+bUTM+yVi1BYGshzvx8wDhMNpklZ0wQE=@Ahdvk9DQ5OVmGufi3JuPB5m8QoERRW93YCdYN1zwEfOT
+2023-01-01T03:37:43.642857Z  INFO sui::client_commands: Signed Authorities Bitmap: RoaringBitmap<[1, 2, 3]>
+2023-01-01T03:37:43.642858Z  INFO sui::client_commands: Transaction Kind : Publish
+2023-01-01T03:37:43.642859Z  INFO sui::client_commands: [1m----- Transaction Effects ----[0m
+2023-01-01T03:37:43.642861Z  INFO sui::client_commands: Status : Success
+2023-01-01T03:37:43.642862Z  INFO sui::client_commands: Created Objects:
+2023-01-01T03:37:43.642863Z  INFO sui::client_commands:   - ID: 0x08204ed92afcfdf9d0f6727a2c7d40db93a059d8 , Owner: Immutable
+2023-01-01T03:37:43.642864Z  INFO sui::client_commands:   - ID: 0xc248939c887aeec1146b80a1dadc6483fcf894b5 , Owner: Account Address ( 0xec274a77d11cdec9812a0ca2e5f0dba464dfaadc )
+2023-01-01T03:37:43.642865Z  INFO sui::client_commands:   - ID: 0xca3f4ad2b0dea3264f38878db34cecb75a6336e0 , Owner: Shared
+2023-01-01T03:37:43.642866Z  INFO sui::client_commands: Mutated Objects:
+2023-01-01T03:37:43.642867Z  INFO sui::client_commands:   - ID: 0x520e1cecf280effc4f2129d5109f11be0c000d35 , Owner: Account Address ( 0xec274a77d11cdec9812a0ca2e5f0dba464dfaadc )
+2023-01-01T04:17:56.477677Z  INFO sui::client_commands:                  Object ID                  |  Gas Value 
+2023-01-01T04:17:56.478289Z  INFO sui::client_commands: ----------------------------------------------------------------------
+2023-01-01T04:17:56.478292Z  INFO sui::client_commands:  0x520e1cecf280effc4f2129d5109f11be0c000d35 |  49999030  
+2023-01-01T04:22:29.135494Z  INFO sui::client_commands: 0xec274a77d11cdec9812a0ca2e5f0dba464dfaadc
+2023-01-01T04:26:03.534243Z  INFO sui::client_commands:                  Object ID                  |  Gas Value 
+2023-01-01T04:26:03.538149Z  INFO sui::client_commands: ----------------------------------------------------------------------
+2023-01-01T04:26:03.538153Z  INFO sui::client_commands:  0x19abf260c039c7a55f9d143d1a92632bef32341a |  10000000  
+2023-01-01T04:26:03.538154Z  INFO sui::client_commands:  0x3bbb2ed3ef3cf294f47daa80da98f99c0d2fe90d |  10000000  
+2023-01-01T04:26:03.538155Z  INFO sui::client_commands:  0x520e1cecf280effc4f2129d5109f11be0c000d35 |  49999030  
+2023-01-01T04:26:03.538156Z  INFO sui::client_commands:  0x91e995511c3aa4d5282bd08ab6b30cecb89a9005 |  10000000  
+2023-01-01T04:26:03.538157Z  INFO sui::client_commands:  0xa646fe595eb8f12b67c3a26bd5cbe3a8bde6cfa1 |  10000000  
+2023-01-01T04:26:03.538157Z  INFO sui::client_commands:  0xe500f71d41ea5ded4e25cf3726c8b61efe3bd9e5 |  10000000  
+2023-01-01T04:26:41.424642Z  INFO sui::client_commands: [1m----- Certificate ----[0m
+2023-01-01T04:26:41.426407Z  INFO sui::client_commands: Transaction Hash: 5sK6AecDrwhjCpYGw7gEmkYMMihq5QCMH9SXXkjRtpmZ
+2023-01-01T04:26:41.426411Z  INFO sui::client_commands: Transaction Signature: AQ==@olQ55sBuMgH5kO5SSRjWE3SHWBPG0+dlhaJxwSohJEZNrpEj31AWV6AUYKQ0FElkRjG22pi8RbO3EzPQQrnkIwA=@Ahdvk9DQ5OVmGufi3JuPB5m8QoERRW93YCdYN1zwEfOT
+2023-01-01T04:26:41.426834Z  INFO sui::client_commands: Signed Authorities Bitmap: RoaringBitmap<[0, 2, 3]>
+2023-01-01T04:26:41.426836Z  INFO sui::client_commands: Transaction Kind : Call
+2023-01-01T04:26:41.426837Z  INFO sui::client_commands: Package ID : 0x8204ed92afcfdf9d0f6727a2c7d40db93a059d8
+2023-01-01T04:26:41.426838Z  INFO sui::client_commands: Module : sandwich
+2023-01-01T04:26:41.426839Z  INFO sui::client_commands: Function : buy_bread
+2023-01-01T04:26:41.426840Z  INFO sui::client_commands: Arguments : ["0xca3f4ad2b0dea3264f38878db34cecb75a6336e0", "0x520e1cecf280effc4f2129d5109f11be0c000d35"]
+2023-01-01T04:26:41.426846Z  INFO sui::client_commands: Type Arguments : []
+2023-01-01T04:26:41.426847Z  INFO sui::client_commands: [1m----- Transaction Effects ----[0m
+2023-01-01T04:26:41.426848Z  INFO sui::client_commands: Status : Success
+2023-01-01T04:26:41.426849Z  INFO sui::client_commands: Created Objects:
+2023-01-01T04:26:41.426850Z  INFO sui::client_commands:   - ID: 0x288be3e5ce5e023bf44d4e9297a5836fee939889 , Owner: Account Address ( 0xec274a77d11cdec9812a0ca2e5f0dba464dfaadc )
+2023-01-01T04:26:41.426852Z  INFO sui::client_commands: Mutated Objects:
+2023-01-01T04:26:41.426853Z  INFO sui::client_commands:   - ID: 0x19abf260c039c7a55f9d143d1a92632bef32341a , Owner: Account Address ( 0xec274a77d11cdec9812a0ca2e5f0dba464dfaadc )
+2023-01-01T04:26:41.426854Z  INFO sui::client_commands:   - ID: 0xca3f4ad2b0dea3264f38878db34cecb75a6336e0 , Owner: Shared
+2023-01-01T04:26:41.426854Z  INFO sui::client_commands: Deleted Objects:
+2023-01-01T04:26:41.426855Z  INFO sui::client_commands:   - ID: 0x520e1cecf280effc4f2129d5109f11be0c000d35
