@@ -4,3 +4,4 @@ node_modules/
 build/
 release/
 .vscode/*
+.aptos

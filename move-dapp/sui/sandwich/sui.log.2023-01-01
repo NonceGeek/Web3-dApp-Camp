@@ -53,3 +53,4 @@
 2023-01-01T04:26:41.426854Z  INFO sui::client_commands:   - ID: 0xca3f4ad2b0dea3264f38878db34cecb75a6336e0 , Owner: Shared
 2023-01-01T04:26:41.426854Z  INFO sui::client_commands: Deleted Objects:
 2023-01-01T04:26:41.426855Z  INFO sui::client_commands:   - ID: 0x520e1cecf280effc4f2129d5109f11be0c000d35
+2023-01-01T05:27:42.597292Z  INFO sui::client_commands: 0xec274a77d11cdec9812a0ca2e5f0dba464dfaadc
