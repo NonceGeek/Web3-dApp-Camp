@@ -1,4 +1,4 @@
-module bank::liquidity {
+module swap::liquidity {
     use sui::coin::{Self, Coin};
     use sui::balance::{Self, Supply, Balance};
     use sui::object::{Self, UID, ID};
