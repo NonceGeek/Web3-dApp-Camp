@@ -49,9 +49,9 @@ struct Pocket has key {
     table: Table<ID, vector<u64>>
 }
 ```
-  - [LP]()是流动交易对，可以当成流水凭证，用以保存 X/Y 两种 <font color="#3366CC">Coin</font>加入流动性时的总数额。
-  - [Pool]() 是交易流动池，由AMM创建用以保存 X/Y 两种 <font color="#3366CC">Coin</font> 以及总的储备。
-  - [Pocket]() 由交易方创建，用以存储每一笔流水中，X/Y 两种 <font color="#3366CC">Coin</font> 的存入流动池中的数额。
+  - <font color="#3366CC">LP</font>是流动交易对，可以当成流水凭证，用以保存 X/Y 两种 <font color="#3366CC">Coin</font>加入流动性时的总数额。
+  - <font color="#3366CC">Pool</font>是交易流动池，由AMM创建用以保存 X/Y 两种 <font color="#3366CC">Coin</font> 以及总的储备。
+  - <font color="#3366CC">Pocket</font>由交易方创建，用以存储每一笔流水中，X/Y 两种 <font color="#3366CC">Coin</font> 的存入流动池中的数额。
 
 ### 2.1 Supply
 
@@ -147,7 +147,7 @@ public entry fun create_pocket(ctx: &mut TxContext) {
 
 1. add_liquidity: public函数，实现了加入流动性的基本功能
 2. deposit_totally: entry函数，将参数中两种 <font color="#3366CC">Coin</font>余额全部加入流动池中
-3. deposit_partly: entry函数，合并多个 <font color="#3366CC">Coin</font> <font color="#3366CC">obj</font>,并将一定数量的余额加入流动池。
+3. deposit_partly: entry函数，合并多个 <font color="#3366CC">Coin</font> <font color="#3366CC">obj</font>，并将一定数量的余额加入流动池。
 
 ```rust
 ///Add liquidity into pool, exchange rate is 1 between X and Y
