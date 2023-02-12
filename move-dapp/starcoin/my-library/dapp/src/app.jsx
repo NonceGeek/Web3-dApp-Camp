@@ -10,6 +10,10 @@ import { LIBRARY_ADDRESS, LIBRARY_RESOURCE_ID } from "./txs/config";
 
 export let starcoinProvider;
 
+const convert = (from, to) => str => Buffer.from(str, from).toString(to);
+const utf8ToHex = convert('utf8', 'hex');
+const hexToUtf8 = convert('hex', 'utf8');
+
 const currentUrl = new URL(window.location.href);
 const forwarderOrigin =
   currentUrl.hostname === "localhost"
@@ -130,6 +134,16 @@ export const App = () => {
 
   const getLibrary = async () => {
     let res = await getResource(LIBRARY_ADDRESS, LIBRARY_RESOURCE_ID)
+    console.log(res);
+    if (res) {
+      for(var i =0; i< res.books.length; i++) {
+        let item = res.books[i];
+        item.name = hexToUtf8(item.name.substring(2));
+        item.link = hexToUtf8(item.link.substring(2));
+        res.books[i] = item;
+      }
+    }
+
     alert(JSON.stringify(res))
   }
   return (
