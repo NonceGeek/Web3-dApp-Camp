@@ -798,6 +798,8 @@ curl -H 'Content-Type: application/json' https://fullnode.devnet.sui.io:443 -d '
 
 同时，Sui 标准库中还包含对象版本的 `Table` 和 `Bag`： `ObjectTable` 和 `ObjectBag`，区别在于前者可以将任何 `store` 能力的值保存，但从外部存储查看时，作为值存储的对象将被隐藏，后者只能将对象作为值存储，但可以从外部存储中通过 ID 访问这些对象。
 
+与之前介绍过的 `vec_map` 相比，`table` 更适合用来处理包含大量映射的情况。
+
 ### Table
 
 下面我们通过示例来展示对 table 的基本操作：
