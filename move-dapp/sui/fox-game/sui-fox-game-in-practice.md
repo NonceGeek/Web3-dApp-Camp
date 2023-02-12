@@ -8,8 +8,8 @@
 
 项目代码：
 
-- 合约：[https://github.com/AptosWolfGame/fox_game_contract](https://github.com/AptosWolfGame/fox_game_contract)
-- 前端： [https://github.com/AptosWolfGame/fox_game_interface](https://github.com/AptosWolfGame/fox_game_interface)
+- 合约：[https://github.com/Plor3r/foxgame-contracts](https://github.com/Plor3r/foxgame-contracts)
+- 前端： [https://github.com/Plor3r/foxgame-interface](https://github.com/Plor3r/foxgame-interface)
 
 在线 Demo： [https://fox-game-interface.vercel.app/](https://fox-game-interface.vercel.app/)
 
