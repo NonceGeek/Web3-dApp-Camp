@@ -38,7 +38,7 @@ let _unused = 10 << complex_u8;
 
 ### 布尔类型（Bool）
 
-Move 布尔值包含两种，`true` 和 `false` 。支持与 `&&`，或`||`  和非 `!` 运算。可以用于 Move 的控制流和 `assert!` 中。
+Move 布尔值包含两种，`true` 和 `false` 。支持与 `&&`，或`||`  和非 `!` 运算。可以用于 Move 的控制流和 `assert!` 中。 `assert!` 是 Move 提供的用于断言，当判断的值是 `false` 时，程序会抛出错误并停止。
 
 ```rust
 if (bool) { ... }
@@ -105,7 +105,7 @@ module ds::tuples {
 - 交换元素： `swap`
 - 读取元素索引： `index_of`
 
-```bash
+```rust
 module ds::vectors {
     use std::vector;
 
@@ -270,7 +270,7 @@ curl -H 'Content-Type: application/json' https://fullnode.devnet.sui.io:443 -d '
 
 Sui 在 `vector` 的基础上实现了两种数据结构，映射 `vec_map` 和集合 `vec_set` 。
 
-`vec_map` 结构保证不包含重复的键，但是条目按照插入顺序排列，而不是按键的顺序。所有的操作时间复杂度为 `0(N)`，N为映射的大小。`vec_map` 只是为了提供方便的操作映射的接口，如果是大型的映射，或者是需要按键的顺序排序的映射都需要另外处理。
+`vec_map` 是一种映射结构，保证不包含重复的键，但是条目按照插入顺序排列，而不是按键的顺序。所有的操作时间复杂度为 `0(N)`，N 为映射的大小。`vec_map` 只是为了提供方便的操作映射的接口，如果需要保存大型的映射，或者是需要按键的顺序排序的映射都需要另外处理。可以考虑使用之后介绍的 `table` 数据结构。
 
 主要操作包括：
 
@@ -314,7 +314,7 @@ module ds::v_map {
             assert!(*other_v == v, 6);
             i = i + 1;
         };
-        // remove all the elements
+        // 移出所有元素
         let (keys, values) = vec_map::into_keys_values(copy m);
         let i = 0;
         while (i < 10) {
@@ -331,7 +331,7 @@ module ds::v_map {
 }
 ```
 
-`vec_set` 结构保证其中不包含重复的键。所有的操作时间复杂度为 `O(N)`，N 为映射的大小。同样，Sets 只是为了提供方便的集合操作接口，按插入顺序进行排序，如果需要使用按键进行排序的集合，也需要另外处理。
+`vec_set` 结构保证其中不包含重复的键。所有的操作时间复杂度为 `O(N)`，N 为映射的大小。同样， `vec_set` 提供了方便的集合操作接口，按插入顺序进行排序，如果需要使用按键进行排序的集合，也需要另外处理。
 
 主要操作包括：
 
@@ -364,7 +364,7 @@ module ds::v_set {
             assert!(vec_set::contains(&m, &k), 2);
             i = i + 1;
         };
-        // remove all the elements
+        // 移出所有元素
         let keys = vec_set::into_keys(copy m);
         let i = 0;
         while (i < 10) {
@@ -397,7 +397,7 @@ module ds::v_set {
 ```rust
 module ds::pq {
     use sui::priority_queue::{PriorityQueue, pop_max, create_entries, new, insert};
-		
+
     /// 检查弹出的最大值及其权重
     fun check_pop_max(h: &mut PriorityQueue<u64>, expected_priority: u64, expected_value: u64) {
         let (priority, value) = pop_max(h);
@@ -427,7 +427,7 @@ Move语言中，结构体是包含类型化字段的用户定义数据结构。 
 
 ```rust
 module ds::structs {
-		// 二维平面点
+    // 二维平面点
     struct Point has copy, drop, store {
         x: u64,
         y: u64,
@@ -443,7 +443,7 @@ module ds::structs {
             x, y
         }
     }
-		// 访问结构体数据
+    // 访问结构体数据
     public fun point_x(p: &Point): u64 {
         p.x
     }
@@ -470,7 +470,7 @@ module ds::structs {
     public fun new_circle(center: Point, radius: u64): Circle {
         Circle { center, radius }
     }
-		// 计算两个圆之间是否相交
+    // 计算两个圆之间是否相交
     public fun overlaps(c1: &Circle, c2: &Circle): bool {
         let d = dist_squared(&c1.center, &c2.center);
         let r1 = c1.radius;
@@ -545,7 +545,7 @@ module ds::objects {
         transfer::freeze_object(object)
     }
 
-		public entry fun create_shareable(red: u8, green: u8, blue: u8, ctx: &mut TxContext) {
+    public entry fun create_shareable(red: u8, green: u8, blue: u8, ctx: &mut TxContext) {
         let color_object = new(red, green, blue, ctx);
         transfer::share_object(color_object)
     }
@@ -638,7 +638,7 @@ Mutated Objects:
 
 ### Dynamic field 和 Dynamic object field
 
-对象虽然可以进行包装，但是也有一些局限，一是对象中的字段是有限的，在结构体定义是已经确定；二是包含其他对象的对象可能非常大，可能会导致交易 gas 很高，Sui 默认结构体大小限制为 2MB；再者，当遇到要储存不一样类型的对象集合时，问题就会比较棘手，Move 中的 vector 只能存储相同的类型的数据。
+对象虽然可以进行包装，但是也有一些局限，一是对象中的字段是有限的，在结构体定义是已经确定；二是包含其他对象的对象可能非常大，可能会导致交易 gas 很高，Sui 默认结构体大小限制为 2MB；再者，当遇到要储存不一样类型的对象集合时，问题就会比较棘手，Move 中的 `vector` 只能存储相同的类型的数据。
 
 因此，Sui 提供了 dynamic field，可以使用任意名字做字段，也可以动态添加和删除。唯一影响的是 gas 的消耗。
 
@@ -792,9 +792,9 @@ curl -H 'Content-Type: application/json' https://fullnode.devnet.sui.io:443 -d '
 
 接下来，我们介绍几种基于 dynamic field 的集合数据类型。
 
-前面介绍过，带有 dynamic field 的对象可以被删除，但是者对于链上集合类型来说这是不希望发生的，因为链上集合类型可能将无限多的键值对作为 dynamic field 保存。因此，在 Sui 提供了两种集合类型： `Table` 和 `Bag`，两者都基于 dynamic field 构建，但是额外支持计算它们包含的条目数，并防止在非空时意外删除。
+前面介绍过，带有 dynamic field 的对象可以被删除，但是这对于链上集合类型来说这是不希望发生的，因为链上集合类型可能将无限多的键值对作为 dynamic field 保存。因此，在 Sui 提供了两种集合类型： `Table` 和 `Bag`，两者都基于 dynamic field 构建的映射类型的数据结构，但是额外支持计算它们包含的条目数，并防止在非空时意外删除。
 
-`Table` 和 `Bag` 的区别在于，Table 是同质（*homogeneous）*映射，所以的键必须是同一个类型，所以的值也必须是同一个类型，而 Bag 是异质（*heterogeneous）映射，可以存储人意类型的键值对。*
+`Table` 和 `Bag` 的区别在于，Table 是同质（*homogeneous）*映射，所以的键必须是同一个类型，所以的值也必须是同一个类型，而 Bag 是异质（*heterogeneous*）映射，可以存储任意类型的键值对。
 
 同时，Sui 标准库中还包含对象版本的 `Table` 和 `Bag`： `ObjectTable` 和 `ObjectBag`，区别在于前者可以将任何 `store` 能力的值保存，但从外部存储查看时，作为值存储的对象将被隐藏，后者只能将对象作为值存储，但可以从外部存储中通过 ID 访问这些对象。
 
@@ -840,7 +840,7 @@ module ds::tables {
     public fun child_age(child: &Child): u64 {
         child.age
     }
-		// 查看
+    // 查看
     public fun child_age_via_parent(parent: &Parent, index: u64): u64 {
         assert!(!table::contains(&parent.children, index), EChildNotExists);
         table::borrow(&parent.children, index).age
@@ -849,7 +849,7 @@ module ds::tables {
     public fun child_size_via_parent(parent: &Parent): u64 {
         table::length(&parent.children)
     }
-		// 添加
+    // 添加
     public entry fun add_child(parent: &mut Parent, index: u64, ctx: &mut TxContext) {
         assert!(table::contains(&parent.children, index), EChildAlreadyExists);
         table::add(&mut parent.children, index, Child { id: object::new(ctx), value: 0 });
@@ -862,7 +862,7 @@ module ds::tables {
     public entry fun mutate_child_via_parent(parent: &mut Parent, index: u64) {
         mutate_child(table::borrow_mut(&mut parent.children, index));
     }
-		// 删除
+    // 删除
     public entry fun delete_child(parent: &mut Parent, index: u64) {
         assert!(!table::contains(&parent.children, index), EChildNotExists);
         let Child { id, age: _ } = table::remove(
@@ -919,7 +919,7 @@ module ds::bags {
             tx_context::sender(ctx)
         );
     }
-		// 添加第一种类型
+    // 添加第一种类型
     public entry fun add_child1(parent: &mut Parent, index: u64, ctx: &mut TxContext) {
         assert!(bag::contains(&parent.children, index), EChildAlreadyExists);
         bag::add(&mut parent.children, index, Child1 { id: object::new(ctx), value: 0 });
