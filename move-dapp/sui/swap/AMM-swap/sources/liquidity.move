@@ -40,7 +40,7 @@ module swap::liquidity {
 
     ///pocket to keep the Liquidity provider
     ///and balance of Coin X/Y
-    struct Pocket has key {
+    struct Pocket has key, store {
         id: UID,
         table: Table<ID, vector<u64>>
     }
@@ -140,7 +140,7 @@ module swap::liquidity {
             id: object::new(ctx),
             table: table::new<ID, vector<u64>>(ctx)
         };
-        transfer::transfer(pocket, sender(ctx));
+        transfer::public_transfer(pocket, sender(ctx));
     }
 
     ///entry function to generate new pool
@@ -157,7 +157,7 @@ module swap::liquidity {
         let (lp, vec) = add_liquidity(pool, coin_x, coin_y, ctx);
         let lp_id = object::id(&lp);
         table::add(&mut pocket.table, lp_id, vec);
-        transfer::transfer(lp, sender(ctx));
+        transfer::public_transfer(lp, sender(ctx));
     }
 
     ///entry function to deposit part of Coin X and Y to pool
@@ -177,10 +177,10 @@ module swap::liquidity {
         let (lp, vec) = add_liquidity(pool, coin_x_in, coin_y_in, ctx);
         let lp_id = object::id(&lp);
         table::add(&mut pocket.table, lp_id, vec);
-        transfer::transfer(lp, sender(ctx));
+        transfer::public_transfer(lp, sender(ctx));
         let sender_address = sender(ctx);
-        transfer::transfer(coin_x_new, sender_address);
-        transfer::transfer(coin_y_new, sender_address);
+        transfer::public_transfer(coin_x_new, sender_address);
+        transfer::public_transfer(coin_y_new, sender_address);
     }
 
     ///entry function Withdraw all balance in Liquidity provider from pool
@@ -196,8 +196,8 @@ module swap::liquidity {
         vector::remove(&mut vec_out, 0);
         vector::remove(&mut vec_out, 0);
         let sender_address = sender(ctx);
-        transfer::transfer(coin_x_out, sender_address);
-        transfer::transfer(coin_y_out, sender_address);
+        transfer::public_transfer(coin_x_out, sender_address);
+        transfer::public_transfer(coin_y_out, sender_address);
     }
 
     ///combine multiple liquidity providers
@@ -238,9 +238,9 @@ module swap::liquidity {
         let combined_lp_id = object::id(&combined_lp);
         table::add(&mut pocket.table, combined_lp_id, combined_vec);
         let sender_address = sender(ctx);
-        transfer::transfer(withdraw_coin_x, sender_address);
-        transfer::transfer(withdraw_coin_y, sender_address);
-        transfer::transfer(combined_lp, sender_address);
+        transfer::public_transfer(withdraw_coin_x, sender_address);
+        transfer::public_transfer(withdraw_coin_y, sender_address);
+        transfer::public_transfer(combined_lp, sender_address);
     }
 
     public entry fun swap_x_to_y<X, Y>(pool: &mut Pool<X, Y>,
@@ -252,8 +252,8 @@ module swap::liquidity {
         let coin_x_in = coin::split(&mut coin_x, amount, ctx);
         let coin_y_out = swap_x_outto_y(pool, coin_x_in, ctx);
         let sender_addres = sender(ctx);
-        transfer::transfer(coin_x, sender_addres);
-        transfer::transfer(coin_y_out, sender_addres);
+        transfer::public_transfer(coin_x, sender_addres);
+        transfer::public_transfer(coin_y_out, sender_addres);
     }
 
     public entry fun swap_y_to_x<X, Y>(pool: &mut Pool<X, Y>,
@@ -265,7 +265,7 @@ module swap::liquidity {
         let coin_y_in = coin::split(&mut coin_y, amount, ctx);
         let coin_x_out = swap_y_into_x(pool, coin_y_in, ctx);
         let sender_addres = sender(ctx);
-        transfer::transfer(coin_x_out, sender_addres);
-        transfer::transfer(coin_y, sender_addres);
+        transfer::public_transfer(coin_x_out, sender_addres);
+        transfer::public_transfer(coin_y, sender_addres);
     }
 }

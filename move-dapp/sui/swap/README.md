@@ -44,7 +44,7 @@ struct Pool<phantom X, phantom Y> has key {
 
 ///pocket to keep the Liquidity provider
 ///and balance of Coin X/Y
-struct Pocket has key {
+struct Pocket has key, store {
     id: UID,
     table: Table<ID, vector<u64>>
 }
@@ -55,13 +55,13 @@ struct Pocket has key {
 
 ### 2.1 Supply
 
->https://github.com/MystenLabs/sui/blob/aa5fe5bf68b20cc2def0392cbab71f8bcdad0060/crates/sui-framework/sources/balance.move#L19
+>https://github.com/MystenLabs/sui/blob/testnet/crates/sui-framework/packages/sui-framework/sources/balance.move#L26
 
 定义sui中 <font color="#3366CC">Token</font> 的供应量，该结构体点个具备 <font color="#3366CC">store</font>能力，可以作为其它 struct字段存储。
 
 ### 2.2 Table
 
->https://github.com/MystenLabs/sui/blob/aa5fe5bf68b20cc2def0392cbab71f8bcdad0060/crates/sui-framework/sources/table.move#L28
+> https://github.com/MystenLabs/sui/blob/testnet/crates/sui-framework/packages/sui-framework/sources/table.move#L27
 
 <font color="#3366CC">Table</font> 是 sui 中提供的一个容器，在标注类型时，要明确其中的键 <font color="#3366CC">K</font>和值 <font color="#3366CC">V</font>的类型。
 
@@ -89,13 +89,13 @@ public entry fun generate_pool<X, Y>(ctx: &mut TxContext) {
 
 #### 3.1.1 balance::zero函数
 
->https://github.com/MystenLabs/sui/blob/aa5fe5bf68b20cc2def0392cbab71f8bcdad0060/crates/sui-framework/sources/balance.move#L61
+>https://github.com/MystenLabs/sui/blob/testnet/crates/sui-framework/packages/sui-framework/sources/balance.move#L67
 
 初始化一个<font color="#3366CC">Coin</font>的余额，价值为0。
 
 #### 3.1.2 balance::create_supply函数
 
->https://github.com/MystenLabs/sui/blob/aa5fe5bf68b20cc2def0392cbab71f8bcdad0060/crates/sui-framework/sources/balance.move#L41
+>https://github.com/MystenLabs/sui/blob/testnet/crates/sui-framework/packages/sui-framework/sources/balance.move#L47
 
 初始化一个 <font color="#3366CC">Coin</font>的供应量，价值为0。
 
@@ -133,13 +133,13 @@ public entry fun create_pocket(ctx: &mut TxContext) {
         table: table::new<ID, vector<u64>>(ctx) //初始化table 容器，存储 Coin X/Y在流水凭证中的数额
     };
     // 将新的 Pocket transer 给交易发送人
-    transfer::transfer(pocket, sender(ctx));
+    transfer::public_transfer(pocket, sender(ctx));
 }
 ```
 
 #### 3.2.1 table::new 函数
 
->https://github.com/MystenLabs/sui/blob/aa5fe5bf68b20cc2def0392cbab71f8bcdad0060/crates/sui-framework/sources/table.move#L35
+>https://github.com/MystenLabs/sui/blob/testnet/crates/sui-framework/packages/sui-framework/sources/table.move#L35
 
 初始化 <font color="#3366CC">Table</font>容器。
 
@@ -178,7 +178,7 @@ public entry fun deposit_totally<X, Y>(pool: &mut Pool<X, Y>,
     let (lp, vec) = add_liquidity(pool, coin_x, coin_y, ctx);
     let lp_id = object::id(&lp);
     table::add(&mut pocket.table, lp_id, vec);
-    transfer::transfer(lp, sender(ctx));
+    transfer::public_transfer(lp, sender(ctx));
 }
 ```
 
@@ -200,52 +200,52 @@ public entry fun deposit_partly<X, Y>(pool: &mut Pool<X, Y>,
     let (lp, vec) = add_liquidity(pool, coin_x_in, coin_y_in, ctx);
     let lp_id = object::id(&lp);
     table::add(&mut pocket.table, lp_id, vec);
-    transfer::transfer(lp, sender(ctx));
+    transfer::public_transfer(lp, sender(ctx));
     let sender_address = sender(ctx);
-    transfer::transfer(coin_x_new, sender_address);
-    transfer::transfer(coin_y_new, sender_address);
+    transfer::public_transfer(coin_x_new, sender_address);
+    transfer::public_transfer(coin_y_new, sender_address);
 }
 ```
 
 #### 3.3.1 coin::value函数
 
->https://github.com/MystenLabs/sui/blob/aa5fe5bf68b20cc2def0392cbab71f8bcdad0060/crates/sui-framework/sources/coin.move#L102
+>https://github.com/MystenLabs/sui/blob/testnet/crates/sui-framework/packages/sui-framework/sources/coin.move#L101
 
 获取一枚 <font color="#3366CC">Coin</font>中的价值[value]()。
 
 #### 3.3.2 coin::put 函数
 
->https://github.com/MystenLabs/sui/blob/aa5fe5bf68b20cc2def0392cbab71f8bcdad0060/crates/sui-framework/sources/coin.move#L149
+>https://github.com/MystenLabs/sui/blob/testnet/crates/sui-framework/packages/sui-framework/sources/coin.move#L148
 
 将一枚 <font color="#3366CC">Coin</font>的价值增加到另一个 [Balance]() [Obj]() 中，然后销毁这枚 <font color="#3366CC">Coin</font>。
 
 #### 3.3.3 coin::split函数
 
->https://github.com/MystenLabs/sui/blob/aa5fe5bf68b20cc2def0392cbab71f8bcdad0060/crates/sui-framework/sources/coin.move#L180
+>https://github.com/MystenLabs/sui/blob/testnet/crates/sui-framework/packages/sui-framework/sources/coin.move#L180
 
 从一枚 <font color="#3366CC">Coin</font>中分出价值为 [split_amount]() 的余额，并用这个数量的余额构造一枚新的 <font color="#3366CC">Coin</font>。
 
 #### 3.3.4 balance::increase_supply函数
 
->https://github.com/MystenLabs/sui/blob/aa5fe5bf68b20cc2def0392cbab71f8bcdad0060/crates/sui-framework/sources/balance.move#L46
+>https://github.com/MystenLabs/sui/blob/testnet/crates/sui-framework/packages/sui-framework/sources/balance.move#L52
 
 增加一种 <font color="#3366CC">Coin</font>的供应数量，增量为 <font color="#3366CC">value</font>，并返回价值为 <font color="#3366CC">value</font>的 Balance。Supply 中的字段 <font color="#3366CC">value</font>是 u64类型，所以在增加供应量时，需要注意不要超过 u64的最大值，即<font color="#3366CC">18446744073709551615u64</font>。
 
 #### 3.3.5 object::id 函数
 
->https://github.com/MystenLabs/sui/blob/aa5fe5bf68b20cc2def0392cbab71f8bcdad0060/crates/sui-framework/sources/object.move#L117
+>https://github.com/MystenLabs/sui/blob/testnet/crates/sui-framework/packages/sui-framework/sources/object.move#L133
 
 获取一个 <font color="#3366CC">obj</font>的 <font color="#3366CC">ID</font>。
 
 #### 3.3.6 table::add函数
 
->https://github.com/MystenLabs/sui/blob/aa5fe5bf68b20cc2def0392cbab71f8bcdad0060/crates/sui-framework/sources/table.move#L43
+>https://github.com/MystenLabs/sui/blob/testnet/crates/sui-framework/packages/sui-framework/sources/table.move#L45
 
 将一对键 <font color="#3366CC">K</font>和值 <font color="#3366CC">V</font>添加到容器table内。
 
 #### 3.3.7 pay::join_vec函数
 
->https://github.com/MystenLabs/sui/blob/aa5fe5bf68b20cc2def0392cbab71f8bcdad0060/crates/sui-framework/sources/pay.move#L67
+>https://github.com/MystenLabs/sui/blob/testnet/crates/sui-framework/packages/sui-framework/sources/pay.move#L68
 
 将一组存储在向量中的 <font color="#3366CC">coins</font>的余额全部合并到另一个 <font color="#3366CC">Coin</font>中，同时销毁这组 <font color="#3366CC">coins</font>。
 <br/>
@@ -294,7 +294,7 @@ public entry fun deposit_totally<X, Y>(pool: &mut Pool<X, Y>,
     // 将LP ID 和返回的向量加到容器中
     table::add(&mut pocket.table, lp_id, vec);
     // 传输流水凭证给发送人
-    transfer::transfer(lp, sender(ctx));
+    transfer::public_transfer(lp, sender(ctx));
 }
 ```
 
@@ -319,11 +319,11 @@ public entry fun deposit_partly<X, Y>(pool: &mut Pool<X, Y>,
     let (lp, vec) = add_liquidity(pool, coin_x_in, coin_y_in, ctx);
     let lp_id = object::id(&lp);
     table::add(&mut pocket.table, lp_id, vec);
-    transfer::transfer(lp, sender(ctx));
+    transfer::public_transfer(lp, sender(ctx));
     let sender_address = sender(ctx);
     // 分离出coin_x_amt/coin_y_amt 数额之后，将有剩余数额的 Coin X/Y传输给发送人
-    transfer::transfer(coin_x_new, sender_address);
-    transfer::transfer(coin_y_new, sender_address);
+    transfer::public_transfer(coin_x_new, sender_address);
+    transfer::public_transfer(coin_y_new, sender_address);
 }
 ```
 
@@ -370,14 +370,14 @@ public entry fun remove_liquidity_totally<X, Y>(pool: &mut Pool<X, Y>,
     vector::remove(&mut vec_out, 0);
     let sender_address = sender(ctx);
     // 将流动池资产中获得的 Coin X/Y 传输给发送人
-    transfer::transfer(coin_x_out, sender_address);
-    transfer::transfer(coin_y_out, sender_address);
+    transfer::public_transfer(coin_x_out, sender_address);
+    transfer::public_transfer(coin_y_out, sender_address);
 }
 ```
 
 #### 3.4.1 balance::decreate_supply函数
 
->https://github.com/MystenLabs/sui/blob/aa5fe5bf68b20cc2def0392cbab71f8bcdad0060/crates/sui-framework/sources/balance.move#L53
+>https://github.com/MystenLabs/sui/blob/testnet/crates/sui-framework/packages/sui-framework/sources/balance.move#L59
 
 缩减 <font color="#3366CC">Coin</font>的供应量。
 
@@ -408,8 +408,8 @@ public entry fun swap_x_to_y<X, Y>(pool: &mut Pool<X, Y>,
     let coin_y_out = swap_x_outto_y(pool, coin_x_in, ctx);
     let sender_addres = sender(ctx);
     // 将coin_x 和coin_y_out 传输给发送人
-    transfer::transfer(coin_x, sender_addres);
-    transfer::transfer(coin_y_out, sender_addres);
+    transfer::public_transfer(coin_x, sender_addres);
+    transfer::public_transfer(coin_y_out, sender_addres);
 }
 
 ///swap Coin Y to X, return Coin X
@@ -434,8 +434,8 @@ public entry fun swap_y_to_x<X, Y>(pool: &mut Pool<X, Y>,
     let coin_x_out = swap_y_into_x(pool, coin_y_in, ctx);
     let sender_addres = sender(ctx);
     // 将coin_x_out 和coin_y 传输给发送人
-    transfer::transfer(coin_x_out, sender_addres);
-    transfer::transfer(coin_y, sender_addres);
+    transfer::public_transfer(coin_x_out, sender_addres);
+    transfer::public_transfer(coin_y, sender_addres);
 }
 ```
 
